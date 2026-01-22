@@ -13,8 +13,9 @@
   background: #212529;
   padding: 0;
   display: flex;
-  justify-content: center; /* center the menu horizontally */
+  justify-content: center; /* center menu */
   align-items: center;
+  position: relative;
 }
 
 /* Left title */
@@ -25,6 +26,25 @@
   margin-right: 30px; /* spacing from menu */
   font-size: 1.2rem;
   white-space: nowrap;
+}
+
+/* Hamburger button (hidden on desktop) */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  cursor: pointer;
+  width: 30px;
+  height: 22px;
+  margin-left: 10px;
+}
+
+.hamburger span {
+  background: #fff;
+  height: 3px;
+  margin: 3px 0;
+  border-radius: 2px;
+  transition: all 0.3s;
 }
 
 .menu-bar > ul {
@@ -103,12 +123,56 @@ body {
   margin: 0;
   padding: 0;
 }
+
+/* ===================== RESPONSIVE ===================== */
+@media (max-width: 768px) {
+  .menu-bar {
+    justify-content: space-between; /* space for title + hamburger */
+  }
+
+  .hamburger {
+    display: flex;
+  }
+
+  .menu-bar > ul {
+    flex-direction: column;
+    display: none; /* hidden initially */
+    width: 100%;
+    background: #212529;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 1000;
+  }
+
+  .menu-bar > ul.show {
+    display: flex;
+  }
+
+  .menu-bar li ul {
+    position: static; /* keep submenus inside mobile menu */
+    transform: translateY(0);
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .menu-bar li ul li ul {
+    position: static;
+    transform: translateX(0);
+  }
+}
 </style>
 
 </head>
 <body>
 
 <nav class="menu-bar fixed-top">
+  <!-- Hamburger button -->
+  <div class="hamburger" id="hamburger">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
   <ul>
     <!-- ================= ENTERTAINMENT ================= -->
 <li>
@@ -363,13 +427,20 @@ body {
     item.addEventListener("mouseleave", (e) => {
       clearTimeout(openTimer);
 
-      // If the mouse is still inside this menu or a child, do nothing
       if (item.contains(e.relatedTarget)) return;
 
       closeTimer = setTimeout(() => {
         item.classList.remove("show");
       }, CLOSE_DELAY);
     });
+  });
+
+  // Hamburger toggle
+  const hamburger = document.getElementById("hamburger");
+  const menu = document.querySelector(".menu-bar > ul");
+
+  hamburger.addEventListener("click", () => {
+    menu.classList.toggle("show");
   });
 </script>
 
