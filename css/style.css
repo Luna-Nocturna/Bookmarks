@@ -93,3 +93,55 @@
 body {
   padding-top: 50px;
 }
+/* Hamburger button - hidden by default */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  justify-content: space-around;
+  width: 24px;
+  height: 20px;
+  cursor: pointer;
+  margin-left: 10px;
+}
+
+.hamburger span {
+  display: block;
+  height: 2px;
+  background: #fff;
+  border-radius: 1px;
+}
+
+/* === Responsive for Mobile === */
+@media (max-width: 768px) {
+  /* Hide desktop menu, show hamburger */
+  .menu-bar > ul {
+    display: none;
+    flex-direction: column; /* vertical dropdown for mobile */
+    width: 100%;
+    background: #212529;
+  }
+
+  .menu-bar.active > ul {
+    display: flex;
+  }
+
+  .hamburger {
+    display: flex;
+  }
+
+  /* Submenus: vertical on mobile */
+  .menu-bar li ul {
+    position: relative;
+    top: 0;
+    left: 0;
+    transform: translateY(0);
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .menu-bar li ul li ul {
+    left: 0;
+    transform: translateX(0);
+  }
+}
+
