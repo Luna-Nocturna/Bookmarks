@@ -6,33 +6,31 @@
 <title>Bookmarks</title>
 
 <!-- External CSS -->
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="css/style.css">
 
 </head>
-
 <body>
 
-<!-- ===================== MENU BAR ===================== -->
 <nav class="menu-bar fixed-top">
-  <ul id="menu-container">
-    <!-- Logo -->
-    <li class="menu-logo">
-      <a href="#"><img src="main/images/Header_Logo.png" alt="Bookmarks Logo"></a>
+  <!-- Logo on the left -->
+  <div class="logo">
+    <img src="images/Header_Logo.png" alt="Bookmarks">
+  </div>
+
+  <ul>
+    <!-- === Your menu items will be included here via separate file or directly === -->
+    <!-- Example: -->
+    <!--
+    <li>
+      <a href="#">Entertainment ▸</a>
+      <ul> ... </ul>
     </li>
-    <!-- Menu items will be loaded here via JS -->
+    -->
   </ul>
 </nav>
 
-<!-- ===================== EXTERNAL JS ===================== -->
-<script src="script.js"></script>
-<script>
-  // Load menu items from menu.html
-  fetch('menu.html')
-    .then(response => response.text())
-    .then(data => {
-      document.getElementById('menu-container').innerHTML += data;
-    });
-</script>
+<!-- External JS -->
+<script src="js/script.js"></script>
 
 </body>
 </html>
