@@ -15,13 +15,15 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  position: relative;
 }
 
+/* Horizontal top bar */
 .menu-bar > ul {
   list-style: none;
   margin: 0;
   padding: 0;
-  display: flex; /* horizontal top bar */
+  display: flex;
 }
 
 .menu-bar li {
@@ -41,7 +43,6 @@
 }
 
 /* ===================== SUBMENUS ===================== */
-/* All submenus hidden initially, vertical dropdowns */
 .menu-bar li ul {
   position: absolute;
   top: 100%;
@@ -52,26 +53,23 @@
   padding: 4px 0;
 
   opacity: 0;
-  transform: translateY(-8px); /* slide down slightly */
+  transform: translateY(-8px);
   pointer-events: none;
   transition: opacity 200ms ease, transform 200ms ease;
 }
 
-/* Nested fly-out submenus (horizontal, right) */
 .menu-bar li ul li ul {
   top: 0;
   left: 100%;
   transform: translateX(-8px);
 }
 
-/* Show state triggered by JS */
 .menu-bar li.show > ul {
   opacity: 1;
   transform: translateX(0) translateY(0);
   pointer-events: auto;
 }
 
-/* Submenu links */
 .menu-bar li ul a {
   padding: 8px 14px;
   color: #ddd;
@@ -82,12 +80,10 @@
   color: #fff;
 }
 
-/* Body padding to avoid overlap with fixed menu */
 body {
   padding-top: 50px;
 }
 
-/* Remove bullets/circles from all lists */
 .menu-bar ul {
   list-style: none;
   margin: 0;
@@ -103,7 +99,8 @@ body {
   padding: 10px;
 }
 
-.hamburger div {
+.hamburger span {
+  display: block;
   width: 25px;
   height: 3px;
   background: #fff;
@@ -152,7 +149,6 @@ body {
     pointer-events: auto;
   }
 
-  /* Nested fly-outs stacked vertically */
   .menu-bar li ul li ul {
     position: relative;
     top: 0;
@@ -440,13 +436,13 @@ document.querySelectorAll("nav li").forEach(item => {
   });
 });
 
-// Mobile submenu toggle on click
+// Mobile submenu toggle
 document.querySelectorAll(".menu-bar li > a").forEach(link => {
   link.addEventListener("click", (e) => {
-    if (window.innerWidth <= 768) {
+    if(window.innerWidth <= 768){
       const parent = link.parentElement;
       const submenu = parent.querySelector("ul");
-      if (submenu) {
+      if(submenu){
         e.preventDefault();
         parent.classList.toggle("show");
       }
@@ -455,16 +451,12 @@ document.querySelectorAll(".menu-bar li > a").forEach(link => {
 });
 
 // Hamburger toggle
-const hamburger = document.createElement("div");
-hamburger.className = "hamburger";
-hamburger.innerHTML = "<div></div><div></div><div></div>";
-document.querySelector(".menu-bar").prepend(hamburger);
-
-hamburger.addEventListener("click", () => {
+document.getElementById("hamburger").addEventListener("click", () => {
   document.querySelector(".menu-bar > ul").classList.toggle("show");
 });
 </script>
 
 </body>
 </html>
+
 
