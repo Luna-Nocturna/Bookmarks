@@ -1,8 +1,9 @@
-// ===================== DESKTOP HOVER =====================
+// Delay times in milliseconds
 const OPEN_DELAY = 200;
 const CLOSE_DELAY = 350;
 
-document.querySelectorAll("nav li").forEach(item => {
+// Select all menu items with submenus
+document.querySelectorAll(".menu-bar li").forEach(item => {
   let openTimer;
   let closeTimer;
 
@@ -22,15 +23,5 @@ document.querySelectorAll("nav li").forEach(item => {
     closeTimer = setTimeout(() => {
       item.classList.remove("show");
     }, CLOSE_DELAY);
-  });
-});
-
-// ===================== MOBILE HAMBURGER =====================
-document.addEventListener("DOMContentLoaded", () => {
-  const hamburger = document.getElementById("hamburger");
-  const menuBar = document.querySelector(".menu-bar");
-
-  hamburger.addEventListener("click", () => {
-    menuBar.classList.toggle("active");
   });
 });
