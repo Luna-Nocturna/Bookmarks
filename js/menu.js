@@ -1,27 +1,33 @@
-// Delay times in milliseconds
-const OPEN_DELAY = 200;
-const CLOSE_DELAY = 350;
+// Load menu.html into #menu-container
+fetch('menu.html')
+  .then(response => response.text())
+  .then(html => {
+    document.getElementById('menu-container').innerHTML = html;
 
-// Select all menu items with submenus
-document.querySelectorAll(".menu-bar li").forEach(item => {
-  let openTimer;
-  let closeTimer;
+    // After menu is loaded, add hover events
+    const OPEN_DELAY = 200;
+    const CLOSE_DELAY = 350;
 
-  item.addEventListener("mouseenter", () => {
-    clearTimeout(closeTimer);
-    openTimer = setTimeout(() => {
-      item.classList.add("show");
-    }, OPEN_DELAY);
-  });
+    document.querySelectorAll("nav li").forEach(item => {
+      let openTimer;
+      let closeTimer;
 
-  item.addEventListener("mouseleave", (e) => {
-    clearTimeout(openTimer);
+      item.addEventListener("mouseenter", () => {
+        clearTimeout(closeTimer);
+        openTimer = setTimeout(() => {
+          item.classList.add("show");
+        }, OPEN_DELAY);
+      });
 
-    // If the mouse is still inside this menu or a child, do nothing
-    if (item.contains(e.relatedTarget)) return;
+      item.addEventListener("mouseleave", (e) => {
+        clearTimeout(openTimer);
 
-    closeTimer = setTimeout(() => {
-      item.classList.remove("show");
-    }, CLOSE_DELAY);
-  });
-});
+        if (item.contains(e.relatedTarget)) return;
+
+        closeTimer = setTimeout(() => {
+          item.classList.remove("show");
+        }, CLOSE_DELAY);
+      });
+    });
+  })
+  .catch(err => console.error('Error loading menu:', err));
