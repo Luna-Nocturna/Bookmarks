@@ -11,40 +11,10 @@
 /* ===================== MENU BAR ===================== */
 .menu-bar {
   background: #212529;
-  padding: 0;
+  padding: 0 1rem;
   display: flex;
-  justify-content: center; /* center menu */
   align-items: center;
-  position: relative;
-}
-
-/* Left title */
-.menu-bar::before {
-  content: "Bookmarks";
-  font-weight: 700; /* thick title */
-  color: #fff;
-  margin-right: 30px; /* spacing from menu */
-  font-size: 1.2rem;
-  white-space: nowrap;
-}
-
-/* Hamburger button (hidden on desktop) */
-.hamburger {
-  display: none;
-  flex-direction: column;
   justify-content: center;
-  cursor: pointer;
-  width: 30px;
-  height: 22px;
-  margin-left: 10px;
-}
-
-.hamburger span {
-  background: #fff;
-  height: 3px;
-  margin: 3px 0;
-  border-radius: 2px;
-  transition: all 0.3s;
 }
 
 .menu-bar > ul {
@@ -71,7 +41,6 @@
 }
 
 /* ===================== SUBMENUS ===================== */
-
 /* All submenus hidden initially, vertical dropdowns */
 .menu-bar li ul {
   position: absolute;
@@ -92,7 +61,7 @@
 .menu-bar li ul li ul {
   top: 0;
   left: 100%;
-  transform: translateX(-8px); /* start slightly left */
+  transform: translateX(-8px);
 }
 
 /* Show state triggered by JS */
@@ -118,25 +87,40 @@ body {
   padding-top: 50px;
 }
 
+/* Remove bullets/circles from all lists */
 .menu-bar ul {
-  list-style: none; /* remove bullets/circles */
+  list-style: none;
   margin: 0;
   padding: 0;
 }
 
-/* ===================== RESPONSIVE ===================== */
-@media (max-width: 768px) {
-  .menu-bar {
-    justify-content: space-between; /* space for title + hamburger */
-  }
+/* ===================== MOBILE/HAMBURGER ===================== */
+.hamburger {
+  display: none;
+  cursor: pointer;
+  flex-direction: column;
+  gap: 4px;
+  padding: 10px;
+}
 
+.hamburger div {
+  width: 25px;
+  height: 3px;
+  background: #fff;
+  transition: all 0.3s ease;
+}
+
+@media (max-width: 768px) {
   .hamburger {
     display: flex;
+    position: absolute;
+    left: 1rem;
+    top: 10px;
   }
 
   .menu-bar > ul {
     flex-direction: column;
-    display: none; /* hidden initially */
+    display: none;
     width: 100%;
     background: #212529;
     position: absolute;
@@ -149,16 +133,34 @@ body {
     display: flex;
   }
 
+  /* Submenus collapsed by default */
   .menu-bar li ul {
-    position: static; /* keep submenus inside mobile menu */
+    position: relative;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    pointer-events: none;
+    display: flex;
+    flex-direction: column;
     transform: translateY(0);
+    transition: none;
+    padding-left: 1rem;
+  }
+
+  .menu-bar li.show > ul {
     opacity: 1;
     pointer-events: auto;
   }
 
+  /* Nested fly-outs stacked vertically */
   .menu-bar li ul li ul {
-    position: static;
+    position: relative;
+    top: 0;
+    left: 0;
     transform: translateX(0);
+    display: flex;
+    flex-direction: column;
+    padding-left: 1rem;
   }
 }
 </style>
@@ -410,39 +412,59 @@ body {
 </nav>
 
 <script>
-  const OPEN_DELAY = 200;
-  const CLOSE_DELAY = 350;
+const OPEN_DELAY = 200;
+const CLOSE_DELAY = 350;
 
-  document.querySelectorAll("nav li").forEach(item => {
-    let openTimer;
-    let closeTimer;
+// Desktop hover behavior
+document.querySelectorAll("nav li").forEach(item => {
+  let openTimer;
+  let closeTimer;
 
-    item.addEventListener("mouseenter", () => {
+  item.addEventListener("mouseenter", () => {
+    if(window.innerWidth > 768){
       clearTimeout(closeTimer);
       openTimer = setTimeout(() => {
         item.classList.add("show");
       }, OPEN_DELAY);
-    });
+    }
+  });
 
-    item.addEventListener("mouseleave", (e) => {
+  item.addEventListener("mouseleave", (e) => {
+    if(window.innerWidth > 768){
       clearTimeout(openTimer);
-
       if (item.contains(e.relatedTarget)) return;
-
       closeTimer = setTimeout(() => {
         item.classList.remove("show");
       }, CLOSE_DELAY);
-    });
+    }
   });
+});
 
-  // Hamburger toggle
-  const hamburger = document.getElementById("hamburger");
-  const menu = document.querySelector(".menu-bar > ul");
-
-  hamburger.addEventListener("click", () => {
-    menu.classList.toggle("show");
+// Mobile submenu toggle on click
+document.querySelectorAll(".menu-bar li > a").forEach(link => {
+  link.addEventListener("click", (e) => {
+    if (window.innerWidth <= 768) {
+      const parent = link.parentElement;
+      const submenu = parent.querySelector("ul");
+      if (submenu) {
+        e.preventDefault();
+        parent.classList.toggle("show");
+      }
+    }
   });
+});
+
+// Hamburger toggle
+const hamburger = document.createElement("div");
+hamburger.className = "hamburger";
+hamburger.innerHTML = "<div></div><div></div><div></div>";
+document.querySelector(".menu-bar").prepend(hamburger);
+
+hamburger.addEventListener("click", () => {
+  document.querySelector(".menu-bar > ul").classList.toggle("show");
+});
 </script>
 
 </body>
 </html>
+
