@@ -1,19 +1,31 @@
 /* ===================== MENU BAR ===================== */
 .menu-bar {
   background: #212529;
-  padding: 0 1rem;
-  display: flex;
+  padding: 0;
+  display: flex;           /* make title + menu items in one row */
   align-items: center;
-  justify-content: center; /* center desktop menu */
-  flex-wrap: wrap;
+  justify-content: center; /* center the menu */
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
 }
 
-/* Horizontal top bar */
+/* --- Menu Title --- */
+.menu-title {
+  font-weight: 700;       /* thick */
+  color: #fff;
+  padding: 12px 18px;
+  margin-right: 20px;     /* space between title and menu items */
+  white-space: nowrap;
+}
+
+/* --- Top-level menu --- */
 .menu-bar > ul {
-  list-style: none;
+  list-style: none;       /* remove bullets */
   margin: 0;
   padding: 0;
-  display: flex;
+  display: flex;          /* horizontal top bar */
 }
 
 .menu-bar li {
@@ -33,6 +45,8 @@
 }
 
 /* ===================== SUBMENUS ===================== */
+
+/* All submenus hidden initially (vertical dropdowns) */
 .menu-bar li ul {
   position: absolute;
   top: 100%;
@@ -43,23 +57,28 @@
   padding: 4px 0;
 
   opacity: 0;
-  transform: translateY(-8px);
+  transform: translateY(-8px); /* slide down slightly */
   pointer-events: none;
   transition: opacity 200ms ease, transform 200ms ease;
+  list-style: none;     /* remove bullets for nested lists */
 }
 
+/* Nested fly-out submenus (horizontal, right) */
 .menu-bar li ul li ul {
   top: 0;
   left: 100%;
-  transform: translateX(-8px);
+  transform: translateX(-8px); /* start slightly left */
+  list-style: none;
 }
 
+/* Show state triggered by JS */
 .menu-bar li.show > ul {
   opacity: 1;
   transform: translateX(0) translateY(0);
   pointer-events: auto;
 }
 
+/* Submenu links */
 .menu-bar li ul a {
   padding: 8px 14px;
   color: #ddd;
@@ -70,70 +89,7 @@
   color: #fff;
 }
 
+/* Body padding to avoid overlap with fixed menu */
 body {
   padding-top: 50px;
-}
-
-/* ===================== MOBILE/HAMBURGER ===================== */
-.hamburger {
-  display: none;
-  cursor: pointer;
-  flex-direction: column;
-  gap: 4px;
-  padding: 10px;
-}
-
-.hamburger span {
-  display: block;
-  width: 25px;
-  height: 3px;
-  background: #fff;
-  transition: all 0.3s ease;
-}
-
-@media (max-width: 768px) {
-  .hamburger {
-    display: flex;
-    margin-right: auto; /* push it to left */
-  }
-
-  /* Stack menu vertically inside nav */
-  .menu-bar > ul {
-    flex-direction: column;
-    width: 100%;
-    display: none; /* hidden until hamburger clicked */
-  }
-
-  .menu-bar > ul.show {
-    display: flex;
-  }
-
-  /* Submenus inside mobile menu */
-  .menu-bar li ul {
-    position: relative;
-    top: 0;
-    left: 0;
-    opacity: 0;
-    pointer-events: none;
-    display: flex;
-    flex-direction: column;
-    transform: none;
-    transition: none;
-    padding-left: 1rem;
-  }
-
-  .menu-bar li.show > ul {
-    opacity: 1;
-    pointer-events: auto;
-  }
-
-  .menu-bar li ul li ul {
-    position: relative;
-    top: 0;
-    left: 0;
-    transform: none;
-    display: flex;
-    flex-direction: column;
-    padding-left: 1rem;
-  }
 }
