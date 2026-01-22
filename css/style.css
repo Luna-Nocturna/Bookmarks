@@ -32,7 +32,7 @@ body {
 
 /* Top-level menu */
 .menu-bar > ul {
-  list-style: none;
+  list-style: none; /* remove bullets */
   margin: 0;
   padding: 0;
   display: flex;
@@ -41,6 +41,7 @@ body {
 .menu-bar li {
   position: relative;
   white-space: nowrap;
+  list-style: none; /* ensure no bullets on li */
 }
 
 .menu-bar a {
@@ -65,15 +66,16 @@ body {
   padding: 4px 0;
 
   opacity: 0;
-  transform: translateY(-8px);
+  transform: translateY(-8px); /* slide down slightly */
   pointer-events: none;
   transition: opacity 200ms ease, transform 200ms ease;
+  list-style: none; /* remove bullets in dropdowns */
 }
 
 .menu-bar li ul li ul {
   top: 0;
   left: 100%;
-  transform: translateX(-8px);
+  transform: translateX(-8px); /* flyout submenu starts slightly left */
 }
 
 .menu-bar li.show > ul {
@@ -85,6 +87,7 @@ body {
 .menu-bar li ul a {
   padding: 8px 14px;
   color: #ddd;
+  text-decoration: none;
 }
 
 .menu-bar li ul a:hover {
