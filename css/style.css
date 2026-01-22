@@ -1,0 +1,139 @@
+/* ===================== MENU BAR ===================== */
+.menu-bar {
+  background: #212529;
+  padding: 0 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center; /* center desktop menu */
+  flex-wrap: wrap;
+}
+
+/* Horizontal top bar */
+.menu-bar > ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+}
+
+.menu-bar li {
+  position: relative;
+  white-space: nowrap;
+}
+
+.menu-bar a {
+  display: block;
+  padding: 12px 18px;
+  color: #fff;
+  text-decoration: none;
+}
+
+.menu-bar a:hover {
+  background: #343a40;
+}
+
+/* ===================== SUBMENUS ===================== */
+.menu-bar li ul {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  min-width: 220px;
+  background: #222;
+  margin: 0;
+  padding: 4px 0;
+
+  opacity: 0;
+  transform: translateY(-8px);
+  pointer-events: none;
+  transition: opacity 200ms ease, transform 200ms ease;
+}
+
+.menu-bar li ul li ul {
+  top: 0;
+  left: 100%;
+  transform: translateX(-8px);
+}
+
+.menu-bar li.show > ul {
+  opacity: 1;
+  transform: translateX(0) translateY(0);
+  pointer-events: auto;
+}
+
+.menu-bar li ul a {
+  padding: 8px 14px;
+  color: #ddd;
+}
+
+.menu-bar li ul a:hover {
+  background: #333;
+  color: #fff;
+}
+
+body {
+  padding-top: 50px;
+}
+
+/* ===================== MOBILE/HAMBURGER ===================== */
+.hamburger {
+  display: none;
+  cursor: pointer;
+  flex-direction: column;
+  gap: 4px;
+  padding: 10px;
+}
+
+.hamburger span {
+  display: block;
+  width: 25px;
+  height: 3px;
+  background: #fff;
+  transition: all 0.3s ease;
+}
+
+@media (max-width: 768px) {
+  .hamburger {
+    display: flex;
+    margin-right: auto; /* push it to left */
+  }
+
+  /* Stack menu vertically inside nav */
+  .menu-bar > ul {
+    flex-direction: column;
+    width: 100%;
+    display: none; /* hidden until hamburger clicked */
+  }
+
+  .menu-bar > ul.show {
+    display: flex;
+  }
+
+  /* Submenus inside mobile menu */
+  .menu-bar li ul {
+    position: relative;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    pointer-events: none;
+    display: flex;
+    flex-direction: column;
+    transform: none;
+    transition: none;
+    padding-left: 1rem;
+  }
+
+  .menu-bar li.show > ul {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .menu-bar li ul li ul {
+    position: relative;
+    top: 0;
+    left: 0;
+    transform: none;
+    display: flex;
+    flex-direction: column;
+    padding-left: 1rem;
+  }
+}
