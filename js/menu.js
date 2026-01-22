@@ -44,3 +44,11 @@ document.querySelectorAll(".menu-bar li > a").forEach(link => {
 document.getElementById("hamburger").addEventListener("click", () => {
   document.querySelector(".menu-bar > ul").classList.toggle("show");
 });
+// Hamburger toggle
+const hamburger = document.getElementById("hamburger");
+const menuBar = document.querySelector(".menu-bar");
+
+hamburger.addEventListener("click", () => {
+  menuBar.classList.toggle("active");
+});
+
