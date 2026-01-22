@@ -4,260 +4,35 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Bookmarks</title>
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css">
+
+<!-- External CSS -->
+<link rel="stylesheet" href="style.css">
+
 </head>
+
 <body>
 
+<!-- ===================== MENU BAR ===================== -->
 <nav class="menu-bar fixed-top">
-  <div class="menu-title">Bookmarks</div>
-  <!-- Hamburger button -->
-  <div class="hamburger" id="hamburger">
-    <span></span>
-    <span></span>
-    <span></span>
-  </div>
-  <ul>
-    <!-- ================= ENTERTAINMENT ================= -->
-<li>
-  <a href="#">Entertainment ▸</a>
-  <ul>
-
-    <!-- Audio -->
-    <li>
-      <a href="#">Audio ▸</a>
-      <ul>
-
-        <li>
-          <a href="#">Rainwave ▸</a>
-          <ul>
-            <li><a href="https://rainwave.cc/all">ALL</a></li>
-            <li><a href="https://rainwave.cc/game">GAME</a></li>
-            <li><a href="https://rainwave.cc/chiptune">CHIPTUNE</a></li>
-            <li><a href="https://rainwave.cc/ocrremix">OCR REMIX</a></li>
-            <li><a href="https://rainwave.cc/covers">COVERS</a></li>
-          </ul>
-        </li>
-
-        <li>
-          <a href="#">AnimeAMAZE ▸</a>
-          <ul>
-            <li><a href="https://www.animeamaze.com">Homepage</a></li>
-            <li><a href="https://animeamaze.mooo.com:8080/request.php">Song Requests</a></li>
-          </ul>
-        </li>
-
-        <li><a href="https://www.radio1.nl">Radio 1</a></li>
-        <li><a href="https://bandcamp.com">Bandcamp</a></li>
-
-      </ul>
+  <ul id="menu-container">
+    <!-- Logo -->
+    <li class="menu-logo">
+      <a href="#"><img src="main/images/Header_Logo.png" alt="Bookmarks Logo"></a>
     </li>
-
-    <!-- Visual -->
-    <li>
-      <a href="#">Visual ▸</a>
-      <ul>
-
-        <li>
-          <a href="#">Twitch ▸</a>
-          <ul>
-
-            <li>
-              <a href="#">Channels ▸</a>
-              <ul>
-                <li><a href="https://twitch.tv/luna_nocturna_">Luna Nocturna</a></li>
-                <li><a href="https://twitch.tv/swordyvtv">SwordyVTV</a></li>
-                <li><a href="https://twitch.tv/ashiekasai">Ashie Kasai</a></li>
-                <li><a href="https://twitch.tv/gamesdonequick">Games Done Quick</a></li>
-                <li><a href="https://twitch.tv/cardboard_cowboy">Cardboard Cowboy</a></li>
-                <li><a href="https://twitch.tv/ingameasylum">Ingame Asylum</a></li>
-              </ul>
-            </li>
-
-            <li><a href="https://twitch.tv/directory/following/live">Following</a></li>
-            <li><a href="https://twitchinsights.net/bots">Insights Bots List</a></li>
-
-          </ul>
-        </li>
-
-        <li><a href="https://www.youtube.com">YouTube</a></li>
-        <li><a href="https://www.npostart.nl">NPO</a></li>
-
-      </ul>
-    </li>
-
-  </ul>
-</li>
-
-<!-- ================= GAMES ================= -->
-<li>
-  <a href="#">Games ▸</a>
-  <ul>
-
-    <!-- FFXIV -->
-    <li>
-      <a href="#">Final Fantasy XIV ▸</a>
-      <ul>
-
-        <li>
-          <a href="#">Official ▸</a>
-          <ul>
-            <li><a href="https://na.finalfantasyxiv.com/a_realm_reborn">A Realm Reborn</a></li>
-            <li><a href="https://na.finalfantasyxiv.com/heavensward">Heavensward</a></li>
-            <li><a href="https://na.finalfantasyxiv.com/lodestone">Lodestone</a></li>
-            <li><a href="https://sqex.to/Msp">Mog Station</a></li>
-          </ul>
-        </li>
-
-        <li>
-          <a href="#">Tools ▸</a>
-          <ul>
-            <li><a href="https://omoikane.nl/bookmarks/ffxiv-catpot-solver/#anchor">Cactpot Solver</a></li>
-            <li><a href="https://omoikane.nl/bookmarks/xiv-wonderous-tails-generator">Wonderous Tails</a></li>
-            <li><a href="https://www.garlandtools.org/db">Garland Tools</a></li>
-            <li><a href="https://ffxivcollect.com">FFXIV Collect</a></li>
-            <li><a href="https://omoikane.nl/bookmarks/b-rank-huntmaps">B-Rank Huntmaps</a></li>
-            <li><a href="https://notranged.github.io/#/solver">Crafting Optimizer</a></li>
-            <li><a href="https://en.ff14housing.com">Housing</a></li>
-            <li><a href="https://ffxivhunt.com/phoenix">FFXIVHUNT</a></li>
-            <li><a href="https://ffxiv.ariyala.com">Ariyala</a></li>
-          </ul>
-        </li>
-
-      </ul>
-    </li>
-
-    <!-- Minecraft -->
-    <li>
-      <a href="#">Minecraft ▸</a>
-      <ul>
-        <li><a href="https://minecraft.net">Homepage</a></li>
-        <li><a href="https://minecraftforum.net/forums/mapping-and-modding/minecraft-mods">Mods</a></li>
-        <li><a href="https://www.planetminecraft.com">Planet Minecraft</a></li>
-      </ul>
-    </li>
-
-    <!-- Guides -->
-    <li>
-      <a href="#">Guides ▸</a>
-      <ul>
-        <li><a href="https://minecraft.gamepedia.com">Minecraft Wiki</a></li>
-        <li><a href="https://terraria.wiki.gg">Terraria Wiki</a></li>
-        <li><a href="https://starbounder.org/Starbound_Wiki">Starbound Wiki</a></li>
-      </ul>
-    </li>
-
-    <!-- Resources -->
-    <li>
-      <a href="#">Resources ▸</a>
-      <ul>
-        <li><a href="https://store.steampowered.com">Steam</a></li>
-        <li><a href="https://www.gog.com">Good Old Gaming</a></li>
-        <li><a href="https://www.humblebundle.com">Humble Bundle</a></li>
-        <li><a href="https://kinguin.net">Kinguin</a></li>
-      </ul>
-    </li>
-
-    <!-- Other -->
-    <li>
-      <a href="#">Other ▸</a>
-      <ul>
-        <li><a href="https://dashnet.org/cookieclicker">Cookie Clicker</a></li>
-        <li><a href="https://kittensgame.com/web">Kittens Game</a></li>
-        <li><a href="https://play.aidungeon.io">AI Dungeon</a></li>
-        <li><a href="https://factorio.com">Factorio</a></li>
-        <li><a href="https://www.nexusmods.com">Nexus Mods</a></li>
-        <li><a href="https://yal.cc/r/terrasavr">Terraria Save Editor</a></li>
-        <li><a href="https://dragonporn.ldblog.jp">Dragonporn</a></li>
-        <li><a href="https://community.playstarbound.com/resources/categories/starbound.21">Starbound Mods</a></li>
-      </ul>
-    </li>
-
-  </ul>
-</li>
-
-
-<!-- ================= DOWNLOADS ================= -->
-<li>
-  <a href="#">Downloads ▸</a>
-  <ul>
-    <li>
-      <a href="#">Torrent ▸</a>
-      <ul>
-        <li><a href="https://1337x.to">1337X</a></li>
-        <li><a href="https://kickass.cd/full">Kick Ass Torrents</a></li>
-        <li><a href="https://proxybay.cc">Pirate Bay</a></li>
-        <li><a href="https://bakabt.me">BakaBT</a></li>
-        <li><a href="https://nyaa.si">Nyaa</a></li>
-        <li><a href="https://doki.co">Doki</a></li>
-      </ul>
-    </li>
-    <li><a href="https://skidrowreloaded.com">Skidrow Reloaded</a></li>
-  </ul>
-</li>
-
-<!-- ================= SOCIAL ================= -->
-<li>
-  <a href="#">Social Media ▸</a>
-  <ul>
-
-    <li>
-      <a href="#">Images ▸</a>
-      <ul>
-        <li><a href="https://pixiv.net">Pixiv</a></li>
-        <li><a href="https://pinterest.com">Pinterest</a></li>
-        <li><a href="https://deviantart.com">DeviantArt</a></li>
-        <li><a href="https://imgur.com">Imgur</a></li>
-      </ul>
-    </li>
-
-    <li><a href="https://reddit.com">Reddit</a></li>
-    <li><a href="https://twitter.com">Twitter</a></li>
-    <li><a href="https://tweetdeck.twitter.com">TweetDeck</a></li>
-    <li><a href="https://youtube.com">YouTube</a></li>
-    <li><a href="https://discordapp.com">Discord</a></li>
-
-  </ul>
-</li>
-
-<!-- ================= TOOLS ================= -->
-<li>
-  <a href="#">Tools ▸</a>
-  <ul>
-    <li><a href="https://tinypng.com">TinyPNG</a></li>
-    <li><a href="https://www.remove.bg">remove.bg</a></li>
-    <li><a href="https://clipdrop.co/relight">ClipDrop Relight</a></li>
-    <li><a href="https://tweakers.net">Tweakers</a></li>
-    <li><a href="https://speedtest.net">Speedtest</a></li>
-    <li><a href="https://10minutemail.net">10 Minute Mail</a></li>
-    <li><a href="http://192.168.2.254">Modem</a></li>
-    <li><a href="https://www.virustotal.com">VirusTotal</a></li>
-    <li><a href="https://buienradar.nl">Buienradar</a></li>
-    <li><a href="https://ventusky.com">Ventusky</a></li>
-    <li><a href="https://dictionary.reference.com">Dictionary</a></li>
-    <li><a href="https://urbandictionary.com">Urban Dictionary</a></li>
-    <li><a href="https://omoikane.nl/bookmarks/wp-admin">Admin</a></li>
-  </ul>
-</li>
-
-<!-- ================= WORK ================= -->
-<li>
-  <a href="#">Work ▸</a>
-  <ul>
-    <li><a href="https://tiemhelpdesk.freshservice.com/helpdesk/tickets/filter/unresolved">Team Freshservice</a></li>
-    <li><a href="https://outlook.office365.com/ecp/">Tiem Exchange</a></li>
-    <li><a href="https://mintiem.cloud.com/Citrix/Storeweb">Citrix Login</a></li>
-    <li><a href="https://www.tiem.nl">Tiem</a></li>
-  </ul>
-</li>
+    <!-- Menu items will be loaded here via JS -->
   </ul>
 </nav>
-  <script src="js/menu.js"></script>
+
+<!-- ===================== EXTERNAL JS ===================== -->
+<script src="script.js"></script>
+<script>
+  // Load menu items from menu.html
+  fetch('menu.html')
+    .then(response => response.text())
+    .then(data => {
+      document.getElementById('menu-container').innerHTML += data;
+    });
+</script>
+
 </body>
 </html>
-
-
-
-
-
-
