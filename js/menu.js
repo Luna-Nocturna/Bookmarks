@@ -6,7 +6,7 @@ fetch("menu.html")
   .then(html => {
     menuContainer.innerHTML = html;
 
-    // After menu is added, initialize hover behavior
+    // Initialize submenu hover
     const OPEN_DELAY = 200;
     const CLOSE_DELAY = 350;
 
@@ -43,52 +43,49 @@ const slideshowImages = [
 const slideshow = document.getElementById("slideshow");
 let currentIndex = 0;
 let nextIndex = 1;
-let fadeDuration = 1000; // fade duration in ms
-let displayDuration = 7000; // how long each image stays fully visible
+const fadeDuration = 1000; // fade time in ms
+const displayDuration = 7000; // full visible time
 
-// Initialize first image
-slideshow.style.backgroundImage = `url('${slideshowImages[0]}')`;
+// Create two stacked divs for crossfade
+const divA = document.createElement("div");
+const divB = document.createElement("div");
 
-// Preload images
-slideshowImages.forEach(src => {
-  const img = new Image();
-  img.src = src;
+[divA, divB].forEach(div => {
+  div.style.position = "absolute";
+  div.style.top = 0;
+  div.style.left = 0;
+  div.style.width = "100%";
+  div.style.height = "100%";
+  div.style.backgroundSize = "cover";
+  div.style.backgroundPosition = "center";
+  div.style.backgroundRepeat = "no-repeat";
+  div.style.transition = `opacity ${fadeDuration}ms ease-in-out`;
+  div.style.zIndex = -2;
+  slideshow.appendChild(div);
 });
 
-// Function to fade to next image
+// Initialize images
+divA.style.backgroundImage = `url('${slideshowImages[0]}')`;
+divA.style.opacity = 1;
+divB.style.opacity = 0;
+
+// Swap divs references
+let topDiv = divB;
+let bottomDiv = divA;
+
 function fadeToNextImage() {
-  const nextImage = slideshowImages[nextIndex];
-  const fadeDiv = document.createElement("div");
+  topDiv.style.backgroundImage = `url('${slideshowImages[nextIndex]}')`;
+  topDiv.style.opacity = 1; // fade in
 
-  fadeDiv.style.backgroundImage = `url('${nextImage}')`;
-  fadeDiv.style.position = "absolute";
-  fadeDiv.style.top = 0;
-  fadeDiv.style.left = 0;
-  fadeDiv.style.width = "100%";
-  fadeDiv.style.height = "100%";
-  fadeDiv.style.backgroundSize = "cover";
-  fadeDiv.style.backgroundPosition = "center";
-  fadeDiv.style.backgroundRepeat = "no-repeat";
-  fadeDiv.style.opacity = 0;
-  fadeDiv.style.transition = `opacity ${fadeDuration}ms ease-in-out`;
-  fadeDiv.style.zIndex = -2;
+  // fade out bottom div
+  bottomDiv.style.opacity = 0;
 
-  slideshow.appendChild(fadeDiv);
+  // After fade, swap references
+  [topDiv, bottomDiv] = [bottomDiv, topDiv];
 
-  // trigger fade in
-  requestAnimationFrame(() => {
-    fadeDiv.style.opacity = 1;
-  });
-
-  // After fade duration, remove old image and reset z-index
-  setTimeout(() => {
-    slideshow.style.backgroundImage = `url('${nextImage}')`;
-    slideshow.removeChild(fadeDiv);
-
-    currentIndex = nextIndex;
-    nextIndex = (nextIndex + 1) % slideshowImages.length;
-  }, fadeDuration);
+  currentIndex = nextIndex;
+  nextIndex = (nextIndex + 1) % slideshowImages.length;
 }
 
-// Start slideshow loop
+// Start the slideshow
 setInterval(fadeToNextImage, displayDuration);
