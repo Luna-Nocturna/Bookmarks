@@ -104,4 +104,5 @@ body {
   background-position: center;
   background-repeat: no-repeat;
   transition: opacity 1s ease-in-out;
+  background-color: #393f42; /* default color while loading */
 }
