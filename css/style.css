@@ -27,7 +27,7 @@ body {
 }
 
 .menu-bar .logo img {
-  height: 50px;
+  height: 60px;
 }
 
 /* Top-level menu */
@@ -46,7 +46,7 @@ body {
 
 .menu-bar a {
   display: block;
-  padding: 20px 24px;
+  padding: 24px 20px;
   color: #fff;
   text-decoration: none;
 }
