@@ -14,8 +14,8 @@
   padding: 0 1rem;
   display: flex;
   align-items: center;
-  justify-content: center;
-  position: relative;
+  justify-content: center; /* center desktop menu */
+  flex-wrap: wrap;
 }
 
 /* Horizontal top bar */
@@ -84,12 +84,6 @@ body {
   padding-top: 50px;
 }
 
-.menu-bar ul {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
 /* ===================== MOBILE/HAMBURGER ===================== */
 .hamburger {
   display: none;
@@ -110,27 +104,21 @@ body {
 @media (max-width: 768px) {
   .hamburger {
     display: flex;
-    position: absolute;
-    left: 1rem;
-    top: 10px;
+    margin-right: auto; /* push it to left */
   }
 
+  /* Stack menu vertically inside nav */
   .menu-bar > ul {
     flex-direction: column;
-    display: none;
     width: 100%;
-    background: #212529;
-    position: absolute;
-    top: 100%;
-    left: 0;
-    z-index: 1000;
+    display: none; /* hidden until hamburger clicked */
   }
 
   .menu-bar > ul.show {
     display: flex;
   }
 
-  /* Submenus collapsed by default */
+  /* Submenus inside mobile menu */
   .menu-bar li ul {
     position: relative;
     top: 0;
@@ -139,7 +127,7 @@ body {
     pointer-events: none;
     display: flex;
     flex-direction: column;
-    transform: translateY(0);
+    transform: none;
     transition: none;
     padding-left: 1rem;
   }
@@ -153,7 +141,7 @@ body {
     position: relative;
     top: 0;
     left: 0;
-    transform: translateX(0);
+    transform: none;
     display: flex;
     flex-direction: column;
     padding-left: 1rem;
@@ -458,5 +446,6 @@ document.getElementById("hamburger").addEventListener("click", () => {
 
 </body>
 </html>
+
 
 
