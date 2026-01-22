@@ -3,15 +3,22 @@
   background: #212529;
   padding: 0;
   display: flex;
-  justify-content: center; /* center the menu */
+  align-items: center;
+}
+
+.menu-bar .logo {
+  margin-right: 20px;
+}
+
+.menu-bar .logo img {
+  height: 40px;
 }
 
 .menu-bar > ul {
   list-style: none;
   margin: 0;
   padding: 0;
-  display: flex; /* horizontal top bar */
-  align-items: center;
+  display: flex;
 }
 
 .menu-bar li {
@@ -30,15 +37,7 @@
   background: #343a40;
 }
 
-/* ===================== LOGO ===================== */
-.menu-logo a img {
-  height: 36px; /* adjust as needed */
-  display: block;
-}
-
 /* ===================== SUBMENUS ===================== */
-
-/* Base submenus (vertical dropdowns) */
 .menu-bar li ul {
   position: absolute;
   top: 100%;
@@ -47,9 +46,8 @@
   background: #222;
   margin: 0;
   padding: 4px 0;
-
   opacity: 0;
-  transform: translateY(-8px); /* slide down slightly */
+  transform: translateY(-8px);
   pointer-events: none;
   transition: opacity 200ms ease, transform 200ms ease;
 }
@@ -58,10 +56,10 @@
 .menu-bar li ul li ul {
   top: 0;
   left: 100%;
-  transform: translateX(-8px); /* slide from left */
+  transform: translateX(-8px);
 }
 
-/* Show state triggered by JS */
+/* Show state controlled by JS */
 .menu-bar li.show > ul {
   opacity: 1;
   transform: translateX(0) translateY(0);
@@ -79,14 +77,14 @@
   color: #fff;
 }
 
-/* Remove bullets/circles */
+/* Body padding to avoid overlap */
+body {
+  padding-top: 60px;
+}
+
+/* Remove bullets from all ul */
 .menu-bar ul {
   list-style: none;
   margin: 0;
   padding: 0;
-}
-
-/* Body padding to avoid overlap with fixed menu */
-body {
-  padding-top: 50px;
 }
