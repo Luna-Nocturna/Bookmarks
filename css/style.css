@@ -173,3 +173,32 @@ body {
   }
 }
 
+/* Hamburger button hidden on desktop */
+#hamburger {
+  display: none;
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 32px;
+  cursor: pointer;
+  padding: 8px 16px;
+}
+
+/* Mobile layout */
+@media (max-width: 768px) {
+  #hamburger {
+    display: block;
+    order: 1; /* show above menu */
+    align-self: flex-end;
+  }
+
+  .menu-bar > ul {
+    display: none; /* hidden by default */
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .menu-bar > ul.show {
+    display: flex; /* shown when hamburger toggled */
+  }
+}
