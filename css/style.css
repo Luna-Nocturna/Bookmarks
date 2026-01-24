@@ -186,11 +186,12 @@ body {
 
 /* Mobile layout */
 @media (max-width: 768px) {
-  /* menu-bar top row: logo + hamburger in a row */
+  /* Top row: logo + hamburger */
   .menu-bar {
-    flex-direction: row; /* keep logo + hamburger horizontal */
+    flex-direction: row;          /* keep logo + hamburger horizontal */
     align-items: center;
-    justify-content: space-between; /* logo left, hamburger right */
+    justify-content: space-between;
+    flex-wrap: wrap;              /* allow menu to wrap to next line */
     padding: 8px 16px;
   }
 
@@ -201,29 +202,31 @@ body {
   #hamburger {
     display: block;
     font-size: 32px;
+    order: 2;                     /* keep hamburger on right */
   }
 
-  /* menu hidden by default, vertical below row */
+  /* menu below top row */
   .menu-bar > ul {
-    display: none;
+    display: none;                /* hidden by default */
     flex-direction: column;
-    width: 100%;
-    margin-top: 8px; /* small gap below logo+hamburger row */
+    width: 100%;                  /* full width under row */
+    order: 3;                      /* forces it below logo+hamburger */
+    margin-top: 8px;
   }
 
-  /* show menu when toggled */
   .menu-bar > ul.show {
     display: flex;
   }
 
-  /* submenu inside mobile menu */
+  /* mobile submenus */
   .menu-bar li ul {
-    padding-left: 12px;
     display: none;
+    padding-left: 12px;
   }
 
   .menu-bar li.show > ul {
     display: block;
   }
 }
+
 
