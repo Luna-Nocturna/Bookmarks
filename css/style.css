@@ -109,3 +109,67 @@ body {
   transition: opacity 1s ease-in-out;
   background-color: #393f42; /* default color while loading */
 }
+@media (max-width: 1024px) {
+  .menu-bar a {
+    padding: 18px 16px;
+  }
+
+  .menu-bar .logo img {
+    height: 50px;
+  }
+}
+@media (max-width: 768px) {
+  /* Menu bar becomes stacked */
+  .menu-bar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  /* Logo centered */
+  .menu-bar .logo {
+    margin: 8px 0;
+    display: flex;
+    justify-content: center;
+  }
+
+  .menu-bar .logo img {
+    height: 42px;
+  }
+
+  /* Menu switches to vertical */
+  .menu-bar > ul {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .menu-bar li {
+    width: 100%;
+  }
+
+  .menu-bar a {
+    padding: 14px 18px;
+  }
+
+  /* Dropdowns become inline instead of floating */
+  .menu-bar li ul {
+    position: static;
+    transform: none;
+    opacity: 1;
+    pointer-events: auto;
+    background: #1f1f1f;
+    padding-left: 12px;
+    display: none;
+  }
+
+  /* Only show submenu when .show is applied */
+  .menu-bar li.show > ul {
+    display: block;
+  }
+
+  /* Disable flyout behavior */
+  .menu-bar li ul li ul {
+    left: 0;
+    padding-left: 12px;
+  }
+}
+
