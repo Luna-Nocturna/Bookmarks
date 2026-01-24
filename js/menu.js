@@ -1,28 +1,38 @@
 // ===================== MENU POPULATION =====================
 var menuContainer = document.getElementById("menu-container");
+var hamburger = document.getElementById("hamburger");
 
 fetch("menu.html")
   .then(function(response) { return response.text(); })
   .then(function(html) {
     menuContainer.innerHTML = html;
 
-    // Initialize submenu hover
     var OPEN_DELAY = 200;
     var CLOSE_DELAY = 350;
     var MOBILE_BREAKPOINT = 768;
 
+    // ===== HAMBURGER TOGGLE =====
+    if (hamburger) {
+      hamburger.addEventListener("click", function() {
+        if (menuContainer.classList.contains("show")) {
+          menuContainer.classList.remove("show");
+        } else {
+          menuContainer.classList.add("show");
+        }
+      });
+    }
+
+    // ===== SUBMENU BEHAVIOR =====
     var navItems = document.querySelectorAll("nav li");
     for (var i = 0; i < navItems.length; i++) {
       (function(item) {
         var openTimer;
         var closeTimer;
 
-        // first child <a>
         var link = item.children[0];
-        // first <ul> inside item (submenu)
         var submenu = item.querySelector("ul");
 
-        // ===== DESKTOP HOVER =====
+        // Desktop hover
         item.addEventListener("mouseenter", function() {
           if (window.innerWidth <= MOBILE_BREAKPOINT) return;
           clearTimeout(closeTimer);
@@ -40,13 +50,12 @@ fetch("menu.html")
           }, CLOSE_DELAY);
         });
 
-        // ===== MOBILE TAP =====
+        // Mobile tap
         if (submenu && link) {
           link.addEventListener("click", function(e) {
             if (window.innerWidth > MOBILE_BREAKPOINT) return;
 
             e.preventDefault(); // stop link
-
             var isOpen = item.classList.contains("show");
 
             // close sibling menus
@@ -70,6 +79,7 @@ fetch("menu.html")
     document.addEventListener("click", function(e) {
       if (window.innerWidth > MOBILE_BREAKPOINT) return;
 
+      // Ignore clicks inside nav
       var target = e.target;
       var insideNav = false;
       while (target) {
@@ -81,6 +91,7 @@ fetch("menu.html")
       }
 
       if (!insideNav) {
+        menuContainer.classList.remove("show");
         var openMenus = document.querySelectorAll("nav li.show");
         for (var i = 0; i < openMenus.length; i++) {
           openMenus[i].classList.remove("show");
@@ -102,10 +113,9 @@ var slideshowImages = [
 var slideshow = document.getElementById("slideshow");
 var currentIndex = 0;
 var nextIndex = 1;
-var fadeDuration = 1000; // fade time in ms
-var displayDuration = 7000; // full visible time
+var fadeDuration = 1000;
+var displayDuration = 7000;
 
-// Create two stacked divs for crossfade
 var divA = document.createElement("div");
 var divB = document.createElement("div");
 
@@ -125,21 +135,19 @@ for (var i = 0; i < divs.length; i++) {
   slideshow.appendChild(div);
 }
 
-// Initialize images
 divA.style.backgroundImage = "url('" + slideshowImages[0] + "')";
 divA.style.opacity = 1;
 divB.style.opacity = 0;
 
-// Swap divs references
 var topDiv = divB;
 var bottomDiv = divA;
 
 function fadeToNextImage() {
   topDiv.style.backgroundImage = "url('" + slideshowImages[nextIndex] + "')";
-  topDiv.style.opacity = 1; // fade in
-  bottomDiv.style.opacity = 0; // fade out
+  topDiv.style.opacity = 1;
+  bottomDiv.style.opacity = 0;
 
-  // swap references
+  // swap
   var temp = topDiv;
   topDiv = bottomDiv;
   bottomDiv = temp;
@@ -148,5 +156,4 @@ function fadeToNextImage() {
   nextIndex = (nextIndex + 1) % slideshowImages.length;
 }
 
-// Start the slideshow
 setInterval(fadeToNextImage, displayDuration);
