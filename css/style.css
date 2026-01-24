@@ -14,7 +14,7 @@ body {
   background-color: #393f42; /* fallback color while images load */
   overflow-x: hidden;        /* prevent horizontal scroll */
   font-family: 'Roboto', sans-serif; /* apply Roboto site-wide */
-  font-size: 20px; /* increase from default 14-15px */
+  font-size: 18px; /* increase from default 14-15px */
 }
 
 /* ===================== MENU BAR ===================== */
@@ -72,7 +72,7 @@ body {
   top: 100%;
   left: 0;
   min-width: 220px;
-  background: #222;
+  background: rgba(34,34,34,0.6);
   margin: 0;
   padding: 4px 0;
 
