@@ -1,110 +1,117 @@
 // ===================== MENU POPULATION =====================
-const menuContainer = document.getElementById("menu-container");
+var menuContainer = document.getElementById("menu-container");
 
 fetch("menu.html")
-  .then(response => response.text())
-  .then(html => {
+  .then(function(response) { return response.text(); })
+  .then(function(html) {
     menuContainer.innerHTML = html;
 
     // Initialize submenu hover
-const OPEN_DELAY = 200;
-const CLOSE_DELAY = 350;
-const MOBILE_BREAKPOINT = 768;
+    var OPEN_DELAY = 200;
+    var CLOSE_DELAY = 350;
+    var MOBILE_BREAKPOINT = 768;
 
-document.querySelectorAll("nav li").forEach(function(item) {
-  let openTimer;
-  let closeTimer;
+    var navItems = document.querySelectorAll("nav li");
+    for (var i = 0; i < navItems.length; i++) {
+      (function(item) {
+        var openTimer;
+        var closeTimer;
 
-  // first child <a>
-  const link = item.children[0];
-  // first <ul> inside item (submenu)
-  const submenu = item.querySelector("ul");
+        // first child <a>
+        var link = item.children[0];
+        // first <ul> inside item (submenu)
+        var submenu = item.querySelector("ul");
 
-  // ===== DESKTOP HOVER =====
-  item.addEventListener("mouseenter", function() {
-    if (window.innerWidth <= MOBILE_BREAKPOINT) return;
-    clearTimeout(closeTimer);
-    openTimer = setTimeout(function() {
-      item.classList.add("show");
-    }, OPEN_DELAY);
-  });
+        // ===== DESKTOP HOVER =====
+        item.addEventListener("mouseenter", function() {
+          if (window.innerWidth <= MOBILE_BREAKPOINT) return;
+          clearTimeout(closeTimer);
+          openTimer = setTimeout(function() {
+            item.classList.add("show");
+          }, OPEN_DELAY);
+        });
 
-  item.addEventListener("mouseleave", function(e) {
-    if (window.innerWidth <= MOBILE_BREAKPOINT) return;
-    clearTimeout(openTimer);
-    if (item.contains(e.relatedTarget)) return;
-    closeTimer = setTimeout(function() {
-      item.classList.remove("show");
-    }, CLOSE_DELAY);
-  });
+        item.addEventListener("mouseleave", function(e) {
+          if (window.innerWidth <= MOBILE_BREAKPOINT) return;
+          clearTimeout(openTimer);
+          if (item.contains(e.relatedTarget)) return;
+          closeTimer = setTimeout(function() {
+            item.classList.remove("show");
+          }, CLOSE_DELAY);
+        });
 
-  // ===== MOBILE TAP =====
-  if (submenu && link) {
-    link.addEventListener("click", function(e) {
+        // ===== MOBILE TAP =====
+        if (submenu && link) {
+          link.addEventListener("click", function(e) {
+            if (window.innerWidth > MOBILE_BREAKPOINT) return;
+
+            e.preventDefault(); // stop link
+
+            var isOpen = item.classList.contains("show");
+
+            // close sibling menus
+            var siblings = item.parentNode.children;
+            for (var j = 0; j < siblings.length; j++) {
+              if (siblings[j] !== item) siblings[j].classList.remove("show");
+            }
+
+            if (isOpen) {
+              item.classList.remove("show");
+            } else {
+              item.classList.add("show");
+            }
+          });
+        }
+
+      })(navItems[i]);
+    }
+
+    // Close menus when clicking outside (mobile)
+    document.addEventListener("click", function(e) {
       if (window.innerWidth > MOBILE_BREAKPOINT) return;
 
-      e.preventDefault(); // stop link
-
-      var isOpen = item.classList.contains("show");
-
-      // close sibling menus
-      var siblings = item.parentNode.children;
-      for (var i = 0; i < siblings.length; i++) {
-        if (siblings[i] !== item) siblings[i].classList.remove("show");
+      var target = e.target;
+      var insideNav = false;
+      while (target) {
+        if (target.tagName === "NAV") {
+          insideNav = true;
+          break;
+        }
+        target = target.parentNode;
       }
 
-      if (isOpen) {
-        item.classList.remove("show");
-      } else {
-        item.classList.add("show");
+      if (!insideNav) {
+        var openMenus = document.querySelectorAll("nav li.show");
+        for (var i = 0; i < openMenus.length; i++) {
+          openMenus[i].classList.remove("show");
+        }
       }
     });
-  }
-});
 
-// Close menus when clicking outside (mobile)
-document.addEventListener("click", function(e) {
-  if (window.innerWidth > MOBILE_BREAKPOINT) return;
-
-  var target = e.target;
-  var insideNav = false;
-  while (target) {
-    if (target.tagName === "NAV") {
-      insideNav = true;
-      break;
-    }
-    target = target.parentNode;
-  }
-
-  if (!insideNav) {
-    var openMenus = document.querySelectorAll("nav li.show");
-    for (var i = 0; i < openMenus.length; i++) {
-      openMenus[i].classList.remove("show");
-    }
-  }
-});
-
-  .catch(err => console.error("Failed to load menu:", err));
+  })
+  .catch(function(err) { console.error("Failed to load menu:", err); });
 
 
 // ===================== SLIDESHOW =====================
-const slideshowImages = [
+var slideshowImages = [
   "images/Wallpaper_1.png",
   "images/Wallpaper_2.png",
   "images/Wallpaper_3.png"
 ];
 
-const slideshow = document.getElementById("slideshow");
-let currentIndex = 0;
-let nextIndex = 1;
-const fadeDuration = 1000; // fade time in ms
-const displayDuration = 7000; // full visible time
+var slideshow = document.getElementById("slideshow");
+var currentIndex = 0;
+var nextIndex = 1;
+var fadeDuration = 1000; // fade time in ms
+var displayDuration = 7000; // full visible time
 
 // Create two stacked divs for crossfade
-const divA = document.createElement("div");
-const divB = document.createElement("div");
+var divA = document.createElement("div");
+var divB = document.createElement("div");
 
-[divA, divB].forEach(div => {
+var divs = [divA, divB];
+for (var i = 0; i < divs.length; i++) {
+  var div = divs[i];
   div.style.position = "absolute";
   div.style.top = 0;
   div.style.left = 0;
@@ -113,29 +120,29 @@ const divB = document.createElement("div");
   div.style.backgroundSize = "cover";
   div.style.backgroundPosition = "center";
   div.style.backgroundRepeat = "no-repeat";
-  div.style.transition = `opacity ${fadeDuration}ms ease-in-out`;
+  div.style.transition = "opacity " + fadeDuration + "ms ease-in-out";
   div.style.zIndex = -2;
   slideshow.appendChild(div);
-});
+}
 
 // Initialize images
-divA.style.backgroundImage = `url('${slideshowImages[0]}')`;
+divA.style.backgroundImage = "url('" + slideshowImages[0] + "')";
 divA.style.opacity = 1;
 divB.style.opacity = 0;
 
 // Swap divs references
-let topDiv = divB;
-let bottomDiv = divA;
+var topDiv = divB;
+var bottomDiv = divA;
 
 function fadeToNextImage() {
-  topDiv.style.backgroundImage = `url('${slideshowImages[nextIndex]}')`;
+  topDiv.style.backgroundImage = "url('" + slideshowImages[nextIndex] + "')";
   topDiv.style.opacity = 1; // fade in
+  bottomDiv.style.opacity = 0; // fade out
 
-  // fade out bottom div
-  bottomDiv.style.opacity = 0;
-
-  // After fade, swap references
-  [topDiv, bottomDiv] = [bottomDiv, topDiv];
+  // swap references
+  var temp = topDiv;
+  topDiv = bottomDiv;
+  bottomDiv = temp;
 
   currentIndex = nextIndex;
   nextIndex = (nextIndex + 1) % slideshowImages.length;
