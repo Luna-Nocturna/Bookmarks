@@ -11,7 +11,7 @@ const OPEN_DELAY = 200;
 const CLOSE_DELAY = 350;
 const MOBILE_BREAKPOINT = 768;
 
-document.querySelectorAll("nav li").forEach(item => {
+document.querySelectorAll("nav li").forEach(function(item) {
   let openTimer;
   let closeTimer;
 
@@ -21,40 +21,38 @@ document.querySelectorAll("nav li").forEach(item => {
   const submenu = item.querySelector("ul");
 
   // ===== DESKTOP HOVER =====
-  item.addEventListener("mouseenter", () => {
+  item.addEventListener("mouseenter", function() {
     if (window.innerWidth <= MOBILE_BREAKPOINT) return;
     clearTimeout(closeTimer);
-    openTimer = setTimeout(() => {
+    openTimer = setTimeout(function() {
       item.classList.add("show");
     }, OPEN_DELAY);
   });
 
-  item.addEventListener("mouseleave", (e) => {
+  item.addEventListener("mouseleave", function(e) {
     if (window.innerWidth <= MOBILE_BREAKPOINT) return;
     clearTimeout(openTimer);
-    // prevent closing if hovering inside
     if (item.contains(e.relatedTarget)) return;
-    closeTimer = setTimeout(() => {
+    closeTimer = setTimeout(function() {
       item.classList.remove("show");
     }, CLOSE_DELAY);
   });
 
   // ===== MOBILE TAP =====
   if (submenu && link) {
-    link.addEventListener("click", (e) => {
+    link.addEventListener("click", function(e) {
       if (window.innerWidth > MOBILE_BREAKPOINT) return;
 
       e.preventDefault(); // stop link
 
-      const isOpen = item.classList.contains("show");
+      var isOpen = item.classList.contains("show");
 
       // close sibling menus
-      const siblings = item.parentNode.children;
-      for (let i = 0; i < siblings.length; i++) {
+      var siblings = item.parentNode.children;
+      for (var i = 0; i < siblings.length; i++) {
         if (siblings[i] !== item) siblings[i].classList.remove("show");
       }
 
-      // toggle this menu
       if (isOpen) {
         item.classList.remove("show");
       } else {
@@ -65,11 +63,11 @@ document.querySelectorAll("nav li").forEach(item => {
 });
 
 // Close menus when clicking outside (mobile)
-document.addEventListener("click", (e) => {
+document.addEventListener("click", function(e) {
   if (window.innerWidth > MOBILE_BREAKPOINT) return;
 
-  let target = e.target;
-  let insideNav = false;
+  var target = e.target;
+  var insideNav = false;
   while (target) {
     if (target.tagName === "NAV") {
       insideNav = true;
@@ -79,12 +77,12 @@ document.addEventListener("click", (e) => {
   }
 
   if (!insideNav) {
-    document.querySelectorAll("nav li.show").forEach(li => {
-      li.classList.remove("show");
-    });
+    var openMenus = document.querySelectorAll("nav li.show");
+    for (var i = 0; i < openMenus.length; i++) {
+      openMenus[i].classList.remove("show");
+    }
   }
 });
-
 
   .catch(err => console.error("Failed to load menu:", err));
 
