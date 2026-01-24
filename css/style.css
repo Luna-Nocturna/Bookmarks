@@ -198,7 +198,7 @@ body {
 }
 
 /* Mobile layout */
-@media (max-width: 1200px) {
+@media (max-width: 1000px) {
   /* Top row: logo + hamburger */
   .menu-bar {
     flex-direction: row;          /* keep logo + hamburger horizontal */
