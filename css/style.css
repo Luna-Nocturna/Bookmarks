@@ -1,9 +1,19 @@
+/* ===================== CUSTOM FONT ===================== */
+@font-face {
+  font-family: 'Roboto';
+  src: url('font/Roboto-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
 /* ===================== DEFAULT BODY ===================== */
 body {
   margin: 0;
   padding: 0;
   background-color: #393f42; /* fallback color while images load */
   overflow-x: hidden;        /* prevent horizontal scroll */
+  font-family: 'Roboto', sans-serif; /* apply Roboto site-wide */
 }
 
 /* ===================== MENU BAR ===================== */
@@ -109,6 +119,7 @@ body {
   transition: opacity 1s ease-in-out;
   background-color: #393f42; /* default color while loading */
 }
+
 @media (max-width: 1024px) {
   .menu-bar a {
     padding: 18px 16px;
@@ -118,6 +129,7 @@ body {
     height: 50px;
   }
 }
+
 @media (max-width: 768px) {
   /* Menu bar becomes stacked */
   .menu-bar {
@@ -228,5 +240,3 @@ body {
     display: block;
   }
 }
-
-
