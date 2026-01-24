@@ -186,19 +186,44 @@ body {
 
 /* Mobile layout */
 @media (max-width: 768px) {
+  /* menu-bar top row: logo + hamburger in a row */
+  .menu-bar {
+    flex-direction: row; /* keep logo + hamburger horizontal */
+    align-items: center;
+    justify-content: space-between; /* logo left, hamburger right */
+    padding: 8px 16px;
+  }
+
+  .menu-bar .logo {
+    margin: 0;
+  }
+
   #hamburger {
     display: block;
-    order: 1; /* show above menu */
-    align-self: flex-end;
+    font-size: 32px;
   }
 
+  /* menu hidden by default, vertical below row */
   .menu-bar > ul {
-    display: none; /* hidden by default */
+    display: none;
     flex-direction: column;
     width: 100%;
+    margin-top: 8px; /* small gap below logo+hamburger row */
   }
 
+  /* show menu when toggled */
   .menu-bar > ul.show {
-    display: flex; /* shown when hamburger toggled */
+    display: flex;
+  }
+
+  /* submenu inside mobile menu */
+  .menu-bar li ul {
+    padding-left: 12px;
+    display: none;
+  }
+
+  .menu-bar li.show > ul {
+    display: block;
   }
 }
+
