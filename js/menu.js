@@ -7,29 +7,62 @@ fetch("menu.html")
     menuContainer.innerHTML = html;
 
     // Initialize submenu hover
-    const OPEN_DELAY = 200;
-    const CLOSE_DELAY = 350;
+const OPEN_DELAY = 200;
+const CLOSE_DELAY = 350;
+const MOBILE_BREAKPOINT = 768;
 
-    document.querySelectorAll("nav li").forEach(item => {
-      let openTimer;
-      let closeTimer;
+document.querySelectorAll("nav li").forEach(item => {
+  let openTimer;
+  let closeTimer;
+  const link = item.querySelector(":scope > a");
+  const submenu = item.querySelector(":scope > ul");
 
-      item.addEventListener("mouseenter", () => {
-        clearTimeout(closeTimer);
-        openTimer = setTimeout(() => {
-          item.classList.add("show");
-        }, OPEN_DELAY);
+  // ===== DESKTOP HOVER =====
+  item.addEventListener("mouseenter", () => {
+    if (window.innerWidth <= MOBILE_BREAKPOINT) return;
+    clearTimeout(closeTimer);
+    openTimer = setTimeout(() => {
+      item.classList.add("show");
+    }, OPEN_DELAY);
+  });
+
+  item.addEventListener("mouseleave", (e) => {
+    if (window.innerWidth <= MOBILE_BREAKPOINT) return;
+    clearTimeout(openTimer);
+    if (item.contains(e.relatedTarget)) return;
+    closeTimer = setTimeout(() => {
+      item.classList.remove("show");
+    }, CLOSE_DELAY);
+  });
+
+  // ===== MOBILE TAP =====
+  if (submenu && link) {
+    link.addEventListener("click", (e) => {
+      if (window.innerWidth > MOBILE_BREAKPOINT) return;
+
+      e.preventDefault(); // stop navigation
+      const isOpen = item.classList.contains("show");
+
+      // close siblings
+      item.parentElement.querySelectorAll(":scope > li.show").forEach(li => {
+        if (li !== item) li.classList.remove("show");
       });
 
-      item.addEventListener("mouseleave", (e) => {
-        clearTimeout(openTimer);
-        if (item.contains(e.relatedTarget)) return;
-        closeTimer = setTimeout(() => {
-          item.classList.remove("show");
-        }, CLOSE_DELAY);
-      });
+      item.classList.toggle("show", !isOpen);
     });
-  })
+  }
+});
+
+// Close menus when tapping outside (mobile)
+document.addEventListener("click", (e) => {
+  if (window.innerWidth > MOBILE_BREAKPOINT) return;
+  if (!e.target.closest("nav")) {
+    document.querySelectorAll("nav li.show").forEach(li => {
+      li.classList.remove("show");
+    });
+  }
+});
+
   .catch(err => console.error("Failed to load menu:", err));
 
 
