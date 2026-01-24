@@ -14,6 +14,7 @@ body {
   background-color: #393f42; /* fallback color while images load */
   overflow-x: hidden;        /* prevent horizontal scroll */
   font-family: 'Roboto', sans-serif; /* apply Roboto site-wide */
+  font-size: 16px; /* increase from default 14-15px */
 }
 
 /* ===================== MENU BAR ===================== */
