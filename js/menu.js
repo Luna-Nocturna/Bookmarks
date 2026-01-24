@@ -14,8 +14,11 @@ const MOBILE_BREAKPOINT = 768;
 document.querySelectorAll("nav li").forEach(item => {
   let openTimer;
   let closeTimer;
-  const link = item.querySelector(":scope > a");
-  const submenu = item.querySelector(":scope > ul");
+
+  // first child <a>
+  const link = item.children[0];
+  // first <ul> inside item (submenu)
+  const submenu = item.querySelector("ul");
 
   // ===== DESKTOP HOVER =====
   item.addEventListener("mouseenter", () => {
@@ -29,6 +32,7 @@ document.querySelectorAll("nav li").forEach(item => {
   item.addEventListener("mouseleave", (e) => {
     if (window.innerWidth <= MOBILE_BREAKPOINT) return;
     clearTimeout(openTimer);
+    // prevent closing if hovering inside
     if (item.contains(e.relatedTarget)) return;
     closeTimer = setTimeout(() => {
       item.classList.remove("show");
@@ -40,28 +44,47 @@ document.querySelectorAll("nav li").forEach(item => {
     link.addEventListener("click", (e) => {
       if (window.innerWidth > MOBILE_BREAKPOINT) return;
 
-      e.preventDefault(); // stop navigation
+      e.preventDefault(); // stop link
+
       const isOpen = item.classList.contains("show");
 
-      // close siblings
-      item.parentElement.querySelectorAll(":scope > li.show").forEach(li => {
-        if (li !== item) li.classList.remove("show");
-      });
+      // close sibling menus
+      const siblings = item.parentNode.children;
+      for (let i = 0; i < siblings.length; i++) {
+        if (siblings[i] !== item) siblings[i].classList.remove("show");
+      }
 
-      item.classList.toggle("show", !isOpen);
+      // toggle this menu
+      if (isOpen) {
+        item.classList.remove("show");
+      } else {
+        item.classList.add("show");
+      }
     });
   }
 });
 
-// Close menus when tapping outside (mobile)
+// Close menus when clicking outside (mobile)
 document.addEventListener("click", (e) => {
   if (window.innerWidth > MOBILE_BREAKPOINT) return;
-  if (!e.target.closest("nav")) {
+
+  let target = e.target;
+  let insideNav = false;
+  while (target) {
+    if (target.tagName === "NAV") {
+      insideNav = true;
+      break;
+    }
+    target = target.parentNode;
+  }
+
+  if (!insideNav) {
     document.querySelectorAll("nav li.show").forEach(li => {
       li.classList.remove("show");
     });
   }
 });
+
 
   .catch(err => console.error("Failed to load menu:", err));
 
