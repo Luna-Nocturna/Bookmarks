@@ -11,19 +11,19 @@
 body {
   margin: 0;
   padding: 0;
-  background-color: #393f42; /* fallback color while images load */
-  overflow-x: hidden;        /* prevent horizontal scroll */
-  font-family: 'Roboto', sans-serif; /* apply Roboto site-wide */
-  font-size: 18px; /* increase from default 14-15px */
+  background-color: #393f42;
+  overflow-x: hidden;
+  font-family: 'Roboto', sans-serif;
+  font-size: 18px;
 }
 
 /* ===================== MENU BAR ===================== */
 .menu-bar {
-  background: rgba(33, 37, 41, 0.3); /* semi-transparent */
+  background: rgba(33, 37, 41, 0.3);
   padding: 0;
   display: flex;
   align-items: center;
-  justify-content: center;  /* center horizontally */
+  justify-content: center;
   width: 100%;
   box-sizing: border-box;
   position: fixed;
@@ -43,7 +43,7 @@ body {
 
 /* Top-level menu */
 .menu-bar > ul {
-  list-style: none; /* remove bullets */
+  list-style: none;
   margin: 0;
   padding: 0;
   display: flex;
@@ -52,11 +52,15 @@ body {
 .menu-bar li {
   position: relative;
   white-space: nowrap;
-  list-style: none; /* ensure no bullets on li */
+  list-style: none;
 }
 
+/* ===== MENU LINKS (FLEX FOR ARROWS) ===== */
 .menu-bar a {
-  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
   padding: 24px 20px;
   color: #fff;
   text-decoration: none;
@@ -64,6 +68,27 @@ body {
 
 .menu-bar a:hover {
   background: rgba(52,58,64,0.6);
+}
+
+/* ===================== ARROWS ===================== */
+
+/* Top-level dropdown arrow */
+.menu-bar > ul > li > a::after {
+  content: "⯆";
+  opacity: 0.8;
+  font-size: 0.9em;
+}
+
+/* Submenu flyout arrow */
+.menu-bar li ul > li > a::after {
+  content: "⯈";
+  opacity: 0.8;
+  font-size: 0.9em;
+}
+
+/* Remove arrows for items WITHOUT submenus */
+.menu-bar li:not(:has(ul)) > a::after {
+  content: none;
 }
 
 /* ===================== SUBMENUS ===================== */
@@ -75,18 +100,17 @@ body {
   background: rgba(34,34,34,0.6);
   margin: 0;
   padding: 4px 0;
-
   opacity: 0;
-  transform: translateY(-8px); /* slide down slightly */
+  transform: translateY(-8px);
   pointer-events: none;
   transition: opacity 200ms ease, transform 200ms ease;
-  list-style: none; /* remove bullets in dropdowns */
+  list-style: none;
 }
 
 .menu-bar li ul li ul {
   top: 0;
   left: 100%;
-  transform: translateX(-8px); /* flyout submenu starts slightly left */
+  transform: translateX(-8px);
 }
 
 .menu-bar li.show > ul {
@@ -98,7 +122,6 @@ body {
 .menu-bar li ul a {
   padding: 8px 14px;
   color: #ddd;
-  text-decoration: none;
 }
 
 .menu-bar li ul a:hover {
@@ -113,14 +136,15 @@ body {
   left: 0;
   width: 100%;
   height: 100%;
-  z-index: -1; /* behind everything */
+  z-index: -1;
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
   transition: opacity 1s ease-in-out;
-  background-color: #393f42; /* default color while loading */
+  background-color: #393f42;
 }
 
+/* ===================== RESPONSIVE ===================== */
 @media (max-width: 1024px) {
   .menu-bar a {
     padding: 18px 16px;
@@ -132,13 +156,11 @@ body {
 }
 
 @media (max-width: 768px) {
-  /* Menu bar becomes stacked */
   .menu-bar {
     flex-direction: column;
     align-items: stretch;
   }
 
-  /* Logo centered */
   .menu-bar .logo {
     margin: 8px 0;
     display: flex;
@@ -149,7 +171,6 @@ body {
     height: 42px;
   }
 
-  /* Menu switches to vertical */
   .menu-bar > ul {
     flex-direction: column;
     width: 100%;
@@ -163,7 +184,6 @@ body {
     padding: 14px 18px;
   }
 
-  /* Dropdowns become inline instead of floating */
   .menu-bar li ul {
     position: static;
     transform: none;
@@ -174,19 +194,17 @@ body {
     display: none;
   }
 
-  /* Only show submenu when .show is applied */
   .menu-bar li.show > ul {
     display: block;
   }
 
-  /* Disable flyout behavior */
   .menu-bar li ul li ul {
     left: 0;
     padding-left: 12px;
   }
 }
 
-/* Hamburger button hidden on desktop */
+/* ===================== HAMBURGER ===================== */
 #hamburger {
   display: none;
   background: none;
@@ -197,14 +215,12 @@ body {
   padding: 8px 16px;
 }
 
-/* Mobile layout */
 @media (max-width: 1000px) {
-  /* Top row: logo + hamburger */
   .menu-bar {
-    flex-direction: row;          /* keep logo + hamburger horizontal */
+    flex-direction: row;
     align-items: center;
     justify-content: space-between;
-    flex-wrap: wrap;              /* allow menu to wrap to next line */
+    flex-wrap: wrap;
     padding: 8px 16px;
   }
 
@@ -214,16 +230,14 @@ body {
 
   #hamburger {
     display: block;
-    font-size: 32px;
-    order: 2;                     /* keep hamburger on right */
+    order: 2;
   }
 
-  /* menu below top row */
   .menu-bar > ul {
-    display: none;                /* hidden by default */
+    display: none;
     flex-direction: column;
-    width: 100%;                  /* full width under row */
-    order: 3;                      /* forces it below logo+hamburger */
+    width: 100%;
+    order: 3;
     margin-top: 8px;
   }
 
@@ -231,7 +245,6 @@ body {
     display: flex;
   }
 
-  /* mobile submenus */
   .menu-bar li ul {
     display: none;
     padding-left: 12px;
