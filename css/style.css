@@ -80,14 +80,12 @@ body {
 /* Top-level items that HAVE a submenu */
 .menu-bar > ul > li:has(> ul) > a::after {
   content: "⯆";
-  opacity: 0.8;
   font-size: 0.9em;
 }
 
 /* Submenu items that HAVE a submenu */
 .menu-bar li ul > li:has(> ul) > a::after {
   content: "⯈";
-  opacity: 0.8;
   font-size: 0.9em;
 }
 
