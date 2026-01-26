@@ -70,26 +70,27 @@ body {
   background: rgba(52,58,64,0.6);
 }
 
-/* ===================== ARROWS ===================== */
+/* ===================== ARROWS (ONLY FOR ITEMS WITH SUBMENUS) ===================== */
 
-/* Top-level dropdown arrow */
-.menu-bar > ul > li > a::after {
+/* Reset: no arrows anywhere by default */
+.menu-bar a::after {
+  content: none;
+}
+
+/* Top-level items that HAVE a submenu */
+.menu-bar > ul > li:has(> ul) > a::after {
   content: "⯆";
   opacity: 0.8;
   font-size: 0.9em;
 }
 
-/* Submenu flyout arrow */
-.menu-bar li ul > li > a::after {
+/* Submenu items that HAVE a submenu */
+.menu-bar li ul > li:has(> ul) > a::after {
   content: "⯈";
   opacity: 0.8;
   font-size: 0.9em;
 }
 
-/* Remove arrows for items WITHOUT submenus */
-.menu-bar li:not(:has(ul)) > a::after {
-  content: none;
-}
 
 /* ===================== SUBMENUS ===================== */
 .menu-bar li ul {
