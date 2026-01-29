@@ -5,6 +5,8 @@
   font-weight: normal;
   font-style: normal;
   font-display: swap;
+  background: #ffffff;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 1) 0%, rgba(186, 244, 255, 1) 100%);
 }
 
 /* ===================== DEFAULT BODY ===================== */
