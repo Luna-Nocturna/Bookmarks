@@ -62,17 +62,22 @@ body {
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
-  color: transparent; /* fallback */
+  color: transparent;
 }
 
-/* ===== MENU LINKS (FLEX FOR ARROWS) ===== */
+/* Keep gradient stable on hover */
+.menu-bar a:hover,
+.menu-bar a:hover::after {
+  -webkit-text-fill-color: transparent;
+}
+
+/* ===== MENU LINKS ===== */
 .menu-bar a {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
   padding: 24px 15px;
-  color: #fff;
   text-decoration: none;
 }
 
@@ -80,25 +85,22 @@ body {
   background: rgba(52,58,64,0.6);
 }
 
-/* ===================== ARROWS (ONLY FOR ITEMS WITH SUBMENUS) ===================== */
-
-/* Reset: no arrows anywhere by default */
+/* ===================== ARROWS ===================== */
 .menu-bar a::after {
   content: none;
 }
 
-/* Top-level items that HAVE a submenu */
+/* Top-level items with submenu */
 .menu-bar > ul > li:has(> ul) > a::after {
   content: "⯆";
   font-size: 0.9em;
 }
 
-/* Submenu items that HAVE a submenu */
+/* Submenu items with submenu */
 .menu-bar li ul > li:has(> ul) > a::after {
   content: "⯈";
   font-size: 0.9em;
 }
-
 
 /* ===================== SUBMENUS ===================== */
 .menu-bar li ul {
@@ -130,12 +132,10 @@ body {
 
 .menu-bar li ul a {
   padding: 8px 14px;
-  /* REMOVE color: #ddd; */
 }
 
 .menu-bar li ul a:hover {
   background: rgba(51,51,51,0.6);
-  /* REMOVE color: #fff; */
 }
 
 /* ===================== SLIDESHOW ===================== */
@@ -218,7 +218,6 @@ body {
   display: none;
   background: none;
   border: none;
-  color: #fff;
   font-size: 32px;
   cursor: pointer;
   padding: 8px 16px;
