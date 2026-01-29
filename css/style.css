@@ -58,7 +58,7 @@ body {
 /* ===================== MENU TEXT GRADIENT ===================== */
 .menu-bar a,
 .menu-bar a::after {
-  background: linear-gradient(to bottom, #ffffff 0%, #9fd3ff 100%);
+  background: linear-gradient(to bottom, #FFFFFF 0%, #BAF4FF 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -130,12 +130,10 @@ body {
 
 .menu-bar li ul a {
   padding: 8px 14px;
-  color: #ddd;
 }
 
 .menu-bar li ul a:hover {
   background: rgba(51,51,51,0.6);
-  color: #fff;
 }
 
 /* ===================== SLIDESHOW ===================== */
