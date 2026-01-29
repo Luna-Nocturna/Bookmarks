@@ -130,10 +130,12 @@ body {
 
 .menu-bar li ul a {
   padding: 8px 14px;
+  /* REMOVE color: #ddd; */
 }
 
 .menu-bar li ul a:hover {
   background: rgba(51,51,51,0.6);
+  /* REMOVE color: #fff; */
 }
 
 /* ===================== SLIDESHOW ===================== */
