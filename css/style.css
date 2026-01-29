@@ -64,16 +64,25 @@ body {
   padding: 24px 15px;
   position: relative; /* for hover background */
   text-decoration: none;
-  z-index: 1; /* text stays above background */
+  z-index: 1; /* text above pseudo-element */
   transition: background-color 0.2s ease;
 }
 
-/* Hover background only behind text */
-.menu-bar a:hover {
-  background-color: rgba(52,58,64,0.6);
+/* Hover background behind text using ::before */
+.menu-bar a::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-color: transparent;
+  transition: background-color 0.2s ease;
+  z-index: -1; /* behind text */
 }
 
-/* Gradient text (top → bottom) for links and arrows */
+.menu-bar a:hover::before {
+  background-color: rgba(52,58,64,0.6); /* darkens behind text */
+}
+
+/* Gradient text for links and arrows */
 .menu-bar a,
 .menu-bar a::after {
   background-image: linear-gradient(to bottom, #FFFFFF 0%, #BAF4FF 100%);
@@ -131,12 +140,21 @@ body {
 .menu-bar li ul a {
   padding: 8px 14px;
   position: relative;
-  z-index: 1; /* text above hover background */
+  z-index: 1; /* text above pseudo-element */
   transition: background-color 0.2s ease;
 }
 
 /* Submenu hover background */
-.menu-bar li ul a:hover {
+.menu-bar li ul a::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-color: transparent;
+  transition: background-color 0.2s ease;
+  z-index: -1;
+}
+
+.menu-bar li ul a:hover::before {
   background-color: rgba(51,51,51,0.6);
 }
 
