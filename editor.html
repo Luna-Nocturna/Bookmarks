@@ -166,11 +166,13 @@
         downBtn.textContent = '↓';
         downBtn.onclick = () => {
           const index = parentArray.indexOf(item);
-          if(index < parentArray.length - 1){
-            [parentArray[index+1], parentArray[index]] = [parentArray[index+1], parentArray[index]];
+          if (index < parentArray.length - 1) {
+            [parentArray[index], parentArray[index + 1]] =
+            [parentArray[index + 1], parentArray[index]];
             renderTree();
           }
         };
+
 
         upDownDiv.appendChild(upBtn);
         upDownDiv.appendChild(downBtn);
