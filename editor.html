@@ -252,30 +252,33 @@
     }
 
     // ---------------------- Save to GitHub ----------------------
-    async function saveTree() {
-      const html = treeToHTML(menuData);
-      const content = btoa(html);
-      const res = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${path}`, {
-        method: 'PUT',
-        headers: {
-          'Authorization': `token ${token}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          message: "Update menu via editor",
-          content: content,
-          sha: currentSha
-        })
-      });
-      const result = await res.json();
-      if(result.content) {
-        alert("Menu saved successfully!");
-        currentSha = result.content.sha;
-      } else {
-        alert("Save failed. Check console.");
-        console.log(result);
-      }
-    }
+async function saveTree() {
+  const html = treeToHTML(menuData);
+  const content = btoa(html);
+  const res = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${path}`, {
+    method: 'PUT',
+    headers: {
+      'Authorization': `token ${token}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      message: "Update menu via editor",
+      content: content,
+      sha: currentSha
+    })
+  });
+  const result = await res.json();
+  if(result.content) {
+    alert("Menu saved successfully!");
+    currentSha = result.content.sha;
+    // Redirect to main page
+    window.location.href = 'index.html';
+  } else {
+    alert("Save failed. Check console.");
+    console.log(result);
+  }
+}
+
 
     loadMenu();
   </script>
