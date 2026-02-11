@@ -81,12 +81,16 @@
   <button onclick="saveTree()">Save Menu</button>
 
   <script>
-    const owner = "Luna-Nocturna";
-    const repo = "Bookmarks";
-    const path = "menu.html";
-    const token = "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"; // keep private
-    let currentSha = ""
-    let menuData = [];
+    const owner = window.GITHUB_OWNER;
+    const repo  = window.GITHUB_REPO;
+    const path  = window.GITHUB_PATH;
+    const token = window.GITHUB_TOKEN;
+
+    if (!owner || !repo || !path || !token) {
+      alert("GitHub editor config missing. Did the userscript load?");
+      throw new Error("Missing GitHub editor configuration");
+    }
+
 
     // ---------------------- Load ----------------------
     async function loadMenu() {
