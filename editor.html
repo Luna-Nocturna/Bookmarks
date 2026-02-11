@@ -9,26 +9,17 @@
       padding: 20px;
       background-color: #121212;
       color: #e0e0e0;
-      font-size: 16px; /* bigger text */
-    }
-
-    input {
-      background-color: #1e1e1e;
-      color: #e0e0e0;
-      border: 1px solid #333;
-      border-radius: 6px;
-      padding: 4px 6px;
       font-size: 16px;
     }
 
     button {
+      border-radius: 6px;
+      padding: 4px 8px;
+      font-size: 16px;
       background-color: #333;
       color: #e0e0e0;
       border: 1px solid #555;
-      border-radius: 6px;
       cursor: pointer;
-      padding: 4px 8px;
-      font-size: 16px;
     }
 
     button:hover {
@@ -38,33 +29,49 @@
     .tree ul {
       list-style-type: none;
       padding-left: 20px;
+      margin: 0;
     }
 
     .tree li {
       margin: 10px 0;
+      /* keep normal vertical stacking */
+    }
+
+    .node-buttons-wrapper {
       display: flex;
       align-items: center;
+      gap: 8px;
     }
 
     .up-down-buttons {
-      display: flex;       /* side by side */
-      margin-right: 8px;   /* spacing from inputs */
-    }
-
-    .link-input {
-      width: 500px;        /* twice as long */
-      margin-left: 5px;
+      display: flex;
+      flex-direction: row; /* side by side */
+      gap: 4px;
     }
 
     .node-buttons {
       display: flex;
       align-items: center;
-      gap: 5px;            /* spacing between buttons and inputs */
+      gap: 5px;
+    }
+
+    .node-buttons input {
+      border-radius: 6px;
+      padding: 4px 6px;
+      font-size: 16px;
+      background-color: #1e1e1e;
+      color: #e0e0e0;
+      border: 1px solid #333;
+    }
+
+    .link-input {
+      width: 500px; /* twice as long */
     }
 
     #add-top-btn {
       margin-bottom: 15px;
     }
+
   </style>
 </head>
 <body>
@@ -137,7 +144,11 @@
       function createNode(item, parentArray) {
         const li = document.createElement('li');
 
-        // Up/Down buttons container
+        // Up/Down + inputs wrapper
+        const wrapperDiv = document.createElement('div');
+        wrapperDiv.className = 'node-buttons-wrapper';
+
+        // Up/Down buttons
         const upDownDiv = document.createElement('div');
         upDownDiv.className = 'up-down-buttons';
 
@@ -164,7 +175,7 @@
         upDownDiv.appendChild(upBtn);
         upDownDiv.appendChild(downBtn);
 
-        // Node input fields and action buttons
+        // Node fields + action buttons
         const nodeDiv = document.createElement('div');
         nodeDiv.className = 'node-buttons';
 
@@ -199,10 +210,12 @@
         nodeDiv.appendChild(addBtn);
         nodeDiv.appendChild(delBtn);
 
-        li.appendChild(upDownDiv);
-        li.appendChild(nodeDiv);
+        // combine wrapper
+        wrapperDiv.appendChild(upDownDiv);
+        wrapperDiv.appendChild(nodeDiv);
+        li.appendChild(wrapperDiv);
 
-        // Render children recursively
+        // Children recursively
         if(item.children && item.children.length > 0){
           const ul = document.createElement('ul');
           item.children.forEach(child => ul.appendChild(createNode(child, item.children)));
@@ -227,7 +240,7 @@
     function treeToHTML(items, isRoot = true) {
       if (!items || items.length === 0) return '';
       let html = '';
-      if (!isRoot) html += '<ul>'; // only wrap non-root items
+      if (!isRoot) html += '<ul>';
       items.forEach(item => {
         html += '<li>';
         html += `<a href="${item.href}"><span class="menu-text">${item.text}</span></a>`;
