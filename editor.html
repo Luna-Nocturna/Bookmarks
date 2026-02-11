@@ -9,19 +9,27 @@
       padding: 20px;
       background-color: #121212;
       color: #e0e0e0;
+      font-size: 16px; /* bigger text */
     }
 
     input {
       background-color: #1e1e1e;
       color: #e0e0e0;
       border: 1px solid #333;
+      border-radius: 6px; /* rounded corners */
+      padding: 4px 6px;
+      font-size: 16px; /* bigger text */
     }
 
     button {
       background-color: #333;
       color: #e0e0e0;
       border: 1px solid #555;
+      border-radius: 6px; /* rounded corners */
       cursor: pointer;
+      margin-left: 5px; /* spacing between buttons */
+      padding: 4px 8px;
+      font-size: 16px;
     }
 
     button:hover {
@@ -34,18 +42,37 @@
     }
 
     .tree li {
-      margin: 5px 0;
+      margin: 10px 0; /* spacing between items */
+      display: flex;
+      align-items: center;
     }
 
     .link-input {
       width: 250px;
+      margin-left: 5px;
+    }
+
+    .node-buttons {
+      display: flex;
+      align-items: center;
+    }
+
+    .up-down-buttons {
+      display: flex;
+      flex-direction: column;
+      margin-right: 8px; /* spacing to inputs */
+    }
+
+    #add-top-btn {
+      margin-bottom: 15px;
     }
   </style>
 </head>
 <body>
   <h1>Menu Editor</h1>
+  <button id="add-top-btn" onclick="addTopCategory()">Add Top Category</button>
   <div class="tree" id="menu-tree"></div>
-  <button onclick="saveTree()">Save to GitHub</button>
+  <button onclick="saveTree()">Save Menu</button>
 
   <script>
     const owner = "Luna-Nocturna";
@@ -65,7 +92,7 @@
       renderTree();
     }
 
-    // ---------------------- Parse HTML into tree ----------------------
+    // ---------------------- Parse HTML ----------------------
     function parseHTML(html) {
       const container = document.createElement('div');
       container.innerHTML = html;
@@ -103,7 +130,7 @@
       return topItems;
     }
 
-    // ---------------------- Render tree ----------------------
+    // ---------------------- Render Tree ----------------------
     function renderTree() {
       const container = document.getElementById('menu-tree');
       container.innerHTML = '';
@@ -111,37 +138,10 @@
       function createNode(item, parentArray) {
         const li = document.createElement('li');
 
-        // Text input
-        const textInput = document.createElement('input');
-        textInput.value = item.text;
-        textInput.oninput = () => item.text = textInput.value;
+        // Up/Down buttons container
+        const upDownDiv = document.createElement('div');
+        upDownDiv.className = 'up-down-buttons';
 
-        // URL input
-        const hrefInput = document.createElement('input');
-        hrefInput.value = item.href;
-        hrefInput.placeholder = "URL";
-        hrefInput.className = "link-input";
-        hrefInput.oninput = () => item.href = hrefInput.value;
-
-        // Add Sub button
-        const addBtn = document.createElement('button');
-        addBtn.textContent = 'Add Sub';
-        addBtn.onclick = () => {
-          const newItem = { text: 'New Item', href: '#', children: [] };
-          item.children.push(newItem);
-          renderTree();
-        };
-
-        // Delete button
-        const delBtn = document.createElement('button');
-        delBtn.textContent = 'Delete';
-        delBtn.onclick = () => {
-          const index = parentArray.indexOf(item);
-          parentArray.splice(index, 1);
-          renderTree();
-        };
-
-        // Move Up button
         const upBtn = document.createElement('button');
         upBtn.textContent = '↑';
         upBtn.onclick = () => {
@@ -152,7 +152,6 @@
           }
         };
 
-        // Move Down button
         const downBtn = document.createElement('button');
         downBtn.textContent = '↓';
         downBtn.onclick = () => {
@@ -163,51 +162,82 @@
           }
         };
 
-        li.appendChild(textInput);
-        li.appendChild(hrefInput);
-        li.appendChild(addBtn);
-        li.appendChild(delBtn);
-        li.appendChild(upBtn);
-        li.appendChild(downBtn);
+        upDownDiv.appendChild(upBtn);
+        upDownDiv.appendChild(downBtn);
 
-        // Render children
+        // Node input fields and action buttons
+        const nodeDiv = document.createElement('div');
+        nodeDiv.className = 'node-buttons';
+
+        const textInput = document.createElement('input');
+        textInput.value = item.text;
+        textInput.oninput = () => item.text = textInput.value;
+
+        const hrefInput = document.createElement('input');
+        hrefInput.value = item.href;
+        hrefInput.placeholder = "URL";
+        hrefInput.className = "link-input";
+        hrefInput.oninput = () => item.href = hrefInput.value;
+
+        const addBtn = document.createElement('button');
+        addBtn.textContent = 'Add Sub';
+        addBtn.onclick = () => {
+          const newItem = { text: 'New Item', href: '#', children: [] };
+          item.children.push(newItem);
+          renderTree();
+        };
+
+        const delBtn = document.createElement('button');
+        delBtn.textContent = 'Delete';
+        delBtn.onclick = () => {
+          const index = parentArray.indexOf(item);
+          parentArray.splice(index, 1);
+          renderTree();
+        };
+
+        nodeDiv.appendChild(textInput);
+        nodeDiv.appendChild(hrefInput);
+        nodeDiv.appendChild(addBtn);
+        nodeDiv.appendChild(delBtn);
+
+        li.appendChild(upDownDiv);
+        li.appendChild(nodeDiv);
+
+        // Render children recursively
         if(item.children && item.children.length > 0){
           const ul = document.createElement('ul');
           item.children.forEach(child => ul.appendChild(createNode(child, item.children)));
           li.appendChild(ul);
         }
+
         return li;
       }
 
       const ulRoot = document.createElement('ul');
       menuData.forEach(item => ulRoot.appendChild(createNode(item, menuData)));
       container.appendChild(ulRoot);
-
-      // Add button for new top-level category
-      const addTopBtn = document.createElement('button');
-      addTopBtn.textContent = 'Add Top Category';
-      addTopBtn.onclick = () => {
-        menuData.push({ text: 'New Category', href: '#', children: [] });
-        renderTree();
-      };
-      container.appendChild(addTopBtn);
     }
 
-    // ---------------------- Convert tree back to HTML ----------------------
-function treeToHTML(items, isRoot = true) {
-  if (!items || items.length === 0) return '';
-  let html = '';
-  if (!isRoot) html += '<ul>'; // only wrap non-root items
-  items.forEach(item => {
-    html += '<li>';
-    html += `<a href="${item.href}"><span class="menu-text">${item.text}</span></a>`;
-    html += treeToHTML(item.children, false);
-    html += '</li>';
-  });
-  if (!isRoot) html += '</ul>';
-  return html;
-}
+    // ---------------------- Add Top Category ----------------------
+    function addTopCategory() {
+      menuData.push({ text: 'New Category', href: '#', children: [] });
+      renderTree();
+    }
 
+    // ---------------------- Convert Tree to HTML ----------------------
+    function treeToHTML(items, isRoot = true) {
+      if (!items || items.length === 0) return '';
+      let html = '';
+      if (!isRoot) html += '<ul>'; // only wrap non-root items
+      items.forEach(item => {
+        html += '<li>';
+        html += `<a href="${item.href}"><span class="menu-text">${item.text}</span></a>`;
+        html += treeToHTML(item.children, false);
+        html += '</li>';
+      });
+      if (!isRoot) html += '</ul>';
+      return html;
+    }
 
     // ---------------------- Save to GitHub ----------------------
     async function saveTree() {
@@ -227,7 +257,7 @@ function treeToHTML(items, isRoot = true) {
       });
       const result = await res.json();
       if(result.content) {
-        alert("Saved successfully!");
+        alert("Menu saved successfully!");
         currentSha = result.content.sha;
       } else {
         alert("Save failed. Check console.");
