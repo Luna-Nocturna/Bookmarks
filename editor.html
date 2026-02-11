@@ -194,18 +194,20 @@
     }
 
     // ---------------------- Convert tree back to HTML ----------------------
-    function treeToHTML(items) {
-      if (!items || items.length === 0) return '';
-      let html = '<ul>';
-      items.forEach(item => {
-        html += '<li>';
-        html += `<a href="${item.href}"><span class="menu-text">${item.text}</span></a>`;
-        html += treeToHTML(item.children);
-        html += '</li>';
-      });
-      html += '</ul>';
-      return html;
-    }
+function treeToHTML(items, isRoot = true) {
+  if (!items || items.length === 0) return '';
+  let html = '';
+  if (!isRoot) html += '<ul>'; // only wrap non-root items
+  items.forEach(item => {
+    html += '<li>';
+    html += `<a href="${item.href}"><span class="menu-text">${item.text}</span></a>`;
+    html += treeToHTML(item.children, false);
+    html += '</li>';
+  });
+  if (!isRoot) html += '</ul>';
+  return html;
+}
+
 
     // ---------------------- Save to GitHub ----------------------
     async function saveTree() {
