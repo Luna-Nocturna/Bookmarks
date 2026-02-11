@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Menu Editor</title>
+  <style>
+    body { font-family: sans-serif; padding: 20px; }
+    textarea { width: 100%; height: 300px; }
+    button { margin-top: 10px; }
+  </style>
+</head>
+<body>
+  <h1>List Editor</h1>
+  <textarea id="list-editor"></textarea><br>
+  <button onclick="saveList()">Save</button>
+
+  <script>
+    const owner = "YOUR_USERNAME";
+    const repo = "YOUR_REPO";
+    const path = "list.html";
+    const token = "YOUR_GITHUB_TOKEN"; // keep private
+    let currentSha = "";
+
+    async function loadList() {
+      const res = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${path}`);
+      const data = await res.json();
+      currentSha = data.sha;
+      document.getElementById('list-editor').value = atob(data.content);
+    }
+
+    async function saveList() {
+      const content = btoa(document.getElementById('list-editor').value);
+      const res = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${path}`, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `token ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          message: "Update list via editor",
+          content: content,
+          sha: currentSha
+        })
+      });
+      const result = await res.json();
+      if(result.content) {
+        alert("Saved successfully!");
+        currentSha = result.content.sha;
+      } else {
+        alert("Save failed.");
+        console.log(result);
+      }
+    }
+
+    loadList();
+  </script>
+</body>
+</html>
