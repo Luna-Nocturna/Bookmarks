@@ -16,18 +16,17 @@
       background-color: #1e1e1e;
       color: #e0e0e0;
       border: 1px solid #333;
-      border-radius: 6px; /* rounded corners */
+      border-radius: 6px;
       padding: 4px 6px;
-      font-size: 16px; /* bigger text */
+      font-size: 16px;
     }
 
     button {
       background-color: #333;
       color: #e0e0e0;
       border: 1px solid #555;
-      border-radius: 6px; /* rounded corners */
+      border-radius: 6px;
       cursor: pointer;
-      margin-left: 5px; /* spacing between buttons */
       padding: 4px 8px;
       font-size: 16px;
     }
@@ -42,25 +41,25 @@
     }
 
     .tree li {
-      margin: 10px 0; /* spacing between items */
+      margin: 10px 0;
       display: flex;
       align-items: center;
     }
 
+    .up-down-buttons {
+      display: flex;       /* side by side */
+      margin-right: 8px;   /* spacing from inputs */
+    }
+
     .link-input {
-      width: 250px;
+      width: 500px;        /* twice as long */
       margin-left: 5px;
     }
 
     .node-buttons {
       display: flex;
       align-items: center;
-    }
-
-    .up-down-buttons {
-      display: flex;
-      flex-direction: column;
-      margin-right: 8px; /* spacing to inputs */
+      gap: 5px;            /* spacing between buttons and inputs */
     }
 
     #add-top-btn {
@@ -157,7 +156,7 @@
         downBtn.onclick = () => {
           const index = parentArray.indexOf(item);
           if(index < parentArray.length - 1){
-            [parentArray[index], parentArray[index+1]] = [parentArray[index+1], parentArray[index]];
+            [parentArray[index+1], parentArray[index]] = [parentArray[index+1], parentArray[index]];
             renderTree();
           }
         };
