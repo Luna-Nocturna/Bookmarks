@@ -4,12 +4,42 @@
   <meta charset="UTF-8">
   <title>Menu Editor</title>
   <style>
-    body { font-family: sans-serif; padding: 20px; }
-    .tree ul { list-style-type: none; padding-left: 20px; }
-    .tree li { margin: 5px 0; }
-    .tree button { margin-left: 5px; }
-    input { margin-left: 5px; }
-    .link-input { width: 250px; }
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+      background-color: #121212;
+      color: #e0e0e0;
+    }
+
+    input {
+      background-color: #1e1e1e;
+      color: #e0e0e0;
+      border: 1px solid #333;
+    }
+
+    button {
+      background-color: #333;
+      color: #e0e0e0;
+      border: 1px solid #555;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #444;
+    }
+
+    .tree ul {
+      list-style-type: none;
+      padding-left: 20px;
+    }
+
+    .tree li {
+      margin: 5px 0;
+    }
+
+    .link-input {
+      width: 250px;
+    }
   </style>
 </head>
 <body>
@@ -23,8 +53,7 @@
     const path = "menu.html";
     const token = "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"; // keep private
     let currentSha = ""
-
-    let menuData = []; // tree structure
+    let menuData = [];
 
     // ---------------------- Load ----------------------
     async function loadMenu() {
@@ -37,63 +66,64 @@
     }
 
     // ---------------------- Parse HTML into tree ----------------------
-function parseHTML(html) {
-  const container = document.createElement('div');
-  container.innerHTML = html;
+    function parseHTML(html) {
+      const container = document.createElement('div');
+      container.innerHTML = html;
 
-  function parseUL(ul) {
-    const items = [];
-    Array.from(ul.children).forEach(li => {
-      if (li.tagName !== 'LI') return;
-      const a = li.querySelector('a');
-      const span = a ? a.querySelector('span.menu-text') : null;
-      const text = span ? span.textContent : (a ? a.textContent : '');
-      const href = a ? a.getAttribute('href') : '#';
-      const subUL = li.querySelector('ul');
-      items.push({
-        text,
-        href,
-        children: subUL ? parseUL(subUL) : []
-      });
-    });
-    return items;
-  }
+      function parseUL(ul) {
+        const items = [];
+        Array.from(ul.children).forEach(li => {
+          if (li.tagName !== 'LI') return;
+          const a = li.querySelector('a');
+          const span = a ? a.querySelector('span.menu-text') : null;
+          const text = span ? span.textContent : (a ? a.textContent : '');
+          const href = a ? a.getAttribute('href') : '#';
+          const subUL = li.querySelector('ul');
+          items.push({
+            text,
+            href,
+            children: subUL ? parseUL(subUL) : []
+          });
+        });
+        return items;
+      }
 
-  // Grab **all top-level <li> elements** inside container
-  const topItems = [];
-  Array.from(container.children).forEach(node => {
-    if (node.tagName === 'LI') {
-      topItems.push({
-        text: node.querySelector('span.menu-text')?.textContent || '',
-        href: node.querySelector('a')?.getAttribute('href') || '#',
-        children: node.querySelector('ul') ? parseUL(node.querySelector('ul')) : []
+      const topItems = [];
+      Array.from(container.children).forEach(node => {
+        if (node.tagName === 'LI') {
+          topItems.push({
+            text: node.querySelector('span.menu-text')?.textContent || '',
+            href: node.querySelector('a')?.getAttribute('href') || '#',
+            children: node.querySelector('ul') ? parseUL(node.querySelector('ul')) : []
+          });
+        } else if (node.tagName === 'UL') {
+          parseUL(node).forEach(i => topItems.push(i));
+        }
       });
-    } else if (node.tagName === 'UL') {
-      // If there’s a wrapping <ul> at root
-      parseUL(node).forEach(i => topItems.push(i));
+      return topItems;
     }
-  });
-
-  return topItems;
-}
 
     // ---------------------- Render tree ----------------------
     function renderTree() {
       const container = document.getElementById('menu-tree');
       container.innerHTML = '';
+
       function createNode(item, parentArray) {
         const li = document.createElement('li');
 
+        // Text input
         const textInput = document.createElement('input');
         textInput.value = item.text;
         textInput.oninput = () => item.text = textInput.value;
 
+        // URL input
         const hrefInput = document.createElement('input');
         hrefInput.value = item.href;
         hrefInput.placeholder = "URL";
         hrefInput.className = "link-input";
         hrefInput.oninput = () => item.href = hrefInput.value;
 
+        // Add Sub button
         const addBtn = document.createElement('button');
         addBtn.textContent = 'Add Sub';
         addBtn.onclick = () => {
@@ -102,6 +132,7 @@ function parseHTML(html) {
           renderTree();
         };
 
+        // Delete button
         const delBtn = document.createElement('button');
         delBtn.textContent = 'Delete';
         delBtn.onclick = () => {
@@ -110,12 +141,37 @@ function parseHTML(html) {
           renderTree();
         };
 
+        // Move Up button
+        const upBtn = document.createElement('button');
+        upBtn.textContent = '↑';
+        upBtn.onclick = () => {
+          const index = parentArray.indexOf(item);
+          if(index > 0){
+            [parentArray[index-1], parentArray[index]] = [parentArray[index], parentArray[index-1]];
+            renderTree();
+          }
+        };
+
+        // Move Down button
+        const downBtn = document.createElement('button');
+        downBtn.textContent = '↓';
+        downBtn.onclick = () => {
+          const index = parentArray.indexOf(item);
+          if(index < parentArray.length - 1){
+            [parentArray[index], parentArray[index+1]] = [parentArray[index+1], parentArray[index]];
+            renderTree();
+          }
+        };
+
         li.appendChild(textInput);
         li.appendChild(hrefInput);
         li.appendChild(addBtn);
         li.appendChild(delBtn);
+        li.appendChild(upBtn);
+        li.appendChild(downBtn);
 
-        if (item.children && item.children.length > 0) {
+        // Render children
+        if(item.children && item.children.length > 0){
           const ul = document.createElement('ul');
           item.children.forEach(child => ul.appendChild(createNode(child, item.children)));
           li.appendChild(ul);
