@@ -37,27 +37,45 @@
     }
 
     // ---------------------- Parse HTML into tree ----------------------
-    function parseHTML(html) {
-      const container = document.createElement('div');
-      container.innerHTML = html;
-      function parseUL(ul) {
-        const items = [];
-        Array.from(ul.children).forEach(li => {
-          const a = li.querySelector('a');
-          const span = a.querySelector('span.menu-text');
-          const text = span ? span.textContent : a.textContent;
-          const href = a.getAttribute('href');
-          const subUL = li.querySelector('ul');
-          items.push({
-            text,
-            href,
-            children: subUL ? parseUL(subUL) : []
-          });
-        });
-        return items;
-      }
-      return parseUL(container.querySelector('ul') || container);
+function parseHTML(html) {
+  const container = document.createElement('div');
+  container.innerHTML = html;
+
+  function parseUL(ul) {
+    const items = [];
+    Array.from(ul.children).forEach(li => {
+      if (li.tagName !== 'LI') return;
+      const a = li.querySelector('a');
+      const span = a ? a.querySelector('span.menu-text') : null;
+      const text = span ? span.textContent : (a ? a.textContent : '');
+      const href = a ? a.getAttribute('href') : '#';
+      const subUL = li.querySelector('ul');
+      items.push({
+        text,
+        href,
+        children: subUL ? parseUL(subUL) : []
+      });
+    });
+    return items;
+  }
+
+  // Grab **all top-level <li> elements** inside container
+  const topItems = [];
+  Array.from(container.children).forEach(node => {
+    if (node.tagName === 'LI') {
+      topItems.push({
+        text: node.querySelector('span.menu-text')?.textContent || '',
+        href: node.querySelector('a')?.getAttribute('href') || '#',
+        children: node.querySelector('ul') ? parseUL(node.querySelector('ul')) : []
+      });
+    } else if (node.tagName === 'UL') {
+      // If there’s a wrapping <ul> at root
+      parseUL(node).forEach(i => topItems.push(i));
     }
+  });
+
+  return topItems;
+}
 
     // ---------------------- Render tree ----------------------
     function renderTree() {
