@@ -81,41 +81,14 @@
   <button onclick="saveTree()">Save Menu</button>
 
   <script>
-    let owner;
-    let repo;
-    let path;
-    let token;
+    const owner = window.GITHUB_OWNER;
+    const repo  = window.GITHUB_REPO;
+    const path  = window.GITHUB_PATH;
+    const token = window.GITHUB_TOKEN;
 
-    function waitForGitHubConfig() {
-      return new Promise((resolve, reject) => {
-        const start = Date.now();
-
-        const check = () => {
-          if (
-            window.GITHUB_OWNER &&
-            window.GITHUB_REPO &&
-            window.GITHUB_PATH &&
-            window.GITHUB_TOKEN
-          ) {
-            owner = window.GITHUB_OWNER;
-            repo = window.GITHUB_REPO;
-            path = window.GITHUB_PATH;
-            token = window.GITHUB_TOKEN;
-
-            resolve();
-            return;
-          }
-
-          if (Date.now() - start > 5000) {
-            reject(new Error("GitHub editor config missing. Did the userscript load?"));
-            return;
-          }
-
-          setTimeout(check, 50);
-        };
-
-        check();
-      });
+    if (!owner || !repo || !path || !token) {
+      alert("GitHub editor config missing. Did the userscript load?");
+      throw new Error("Missing GitHub editor configuration");
     }
 
 
@@ -128,7 +101,6 @@
       menuData = parseHTML(html);
       renderTree();
     }
-
 
     // ---------------------- Parse HTML ----------------------
     function parseHTML(html) {
@@ -144,14 +116,12 @@
           const text = span ? span.textContent : (a ? a.textContent : '');
           const href = a ? a.getAttribute('href') : '#';
           const subUL = li.querySelector('ul');
-
           items.push({
             text,
             href,
             children: subUL ? parseUL(subUL) : []
           });
         });
-
         return items;
       }
 
@@ -167,10 +137,8 @@
           parseUL(node).forEach(i => topItems.push(i));
         }
       });
-
       return topItems;
     }
-
 
     // ---------------------- Render Tree ----------------------
     function renderTree() {
@@ -193,8 +161,7 @@
         upBtn.onclick = () => {
           const index = parentArray.indexOf(item);
           if(index > 0){
-            [parentArray[index-1], parentArray[index]] =
-              [parentArray[index], parentArray[index-1]];
+            [parentArray[index-1], parentArray[index]] = [parentArray[index], parentArray[index-1]];
             renderTree();
           }
         };
@@ -205,10 +172,11 @@
           const index = parentArray.indexOf(item);
           if (index < parentArray.length - 1) {
             [parentArray[index], parentArray[index + 1]] =
-              [parentArray[index + 1], parentArray[index]];
+            [parentArray[index + 1], parentArray[index]];
             renderTree();
           }
         };
+
 
         upDownDiv.appendChild(upBtn);
         upDownDiv.appendChild(downBtn);
@@ -256,9 +224,7 @@
         // Children recursively
         if(item.children && item.children.length > 0){
           const ul = document.createElement('ul');
-          item.children.forEach(child =>
-            ul.appendChild(createNode(child, item.children))
-          );
+          item.children.forEach(child => ul.appendChild(createNode(child, item.children)));
           li.appendChild(ul);
         }
 
@@ -270,84 +236,63 @@
       container.appendChild(ulRoot);
     }
 
-
     // ---------------------- Add Top Category ----------------------
     function addTopCategory() {
       menuData.push({ text: 'New Category', href: '#', children: [] });
       renderTree();
     }
 
-
     // ---------------------- Convert Tree to HTML ----------------------
-    function treeToHTML(items, indent = 0) {
-      if (!items || items.length === 0) return '';
+function treeToHTML(items, indent = 0) {
+  if (!items || items.length === 0) return '';
+  let html = '';
+  const spacer = '  '.repeat(indent); // 2 spaces per indent
 
-      let html = '';
-      const spacer = '  '.repeat(indent);
-
-      html += indent === 0 ? '' : spacer + '<ul>\n';
-
-      items.forEach(item => {
-        html += spacer + '  <li>';
-        html += `<a href="${item.href}"><span class="menu-text">${item.text}</span></a>\n`;
-
-        if (item.children && item.children.length > 0) {
-          html += treeToHTML(item.children, indent + 2);
-          html += spacer + '  ';
-        }
-
-        html += '</li>\n';
-      });
-
-      html += indent === 0 ? '' : spacer + '</ul>\n';
-
-      return html;
+  html += indent === 0 ? '' : spacer + '<ul>\n';
+  items.forEach(item => {
+    html += spacer + '  <li>';
+    html += `<a href="${item.href}"><span class="menu-text">${item.text}</span></a>\n`;
+    if (item.children && item.children.length > 0) {
+      html += treeToHTML(item.children, indent + 2);
+      html += spacer + '  ';
     }
+    html += '</li>\n';
+  });
+  html += indent === 0 ? '' : spacer + '</ul>\n';
+  return html;
+}
 
 
     // ---------------------- Save to GitHub ----------------------
-    async function saveTree() {
-      const html = treeToHTML(menuData);
-      const content = btoa(html);
-
-      const res = await fetch(
-        `https://api.github.com/repos/${owner}/${repo}/contents/${path}`,
-        {
-          method: 'PUT',
-          headers: {
-            'Authorization': `token ${token}`,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            message: "Update menu via editor",
-            content: content,
-            sha: currentSha
-          })
-        }
-      );
-
-      const result = await res.json();
-
-      if(result.content) {
-        alert("Menu saved successfully!");
-        currentSha = result.content.sha;
-
-        // Redirect to main page
-        window.location.href = 'index.html';
-      } else {
-        alert("Save failed. Check console.");
-        console.log(result);
-      }
-    }
+async function saveTree() {
+  const html = treeToHTML(menuData);
+  const content = btoa(html);
+  const res = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${path}`, {
+    method: 'PUT',
+    headers: {
+      'Authorization': `token ${token}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      message: "Update menu via editor",
+      content: content,
+      sha: currentSha
+    })
+  });
+  const result = await res.json();
+  if(result.content) {
+    alert("Menu saved successfully!");
+    currentSha = result.content.sha;
+    // Redirect to main page
+    window.location.href = 'index.html';
+  } else {
+    alert("Save failed. Check console.");
+    console.log(result);
+  }
+}
 
 
-    waitForGitHubConfig()
-      .then(loadMenu)
-      .catch(error => {
-        alert(error.message);
-        console.error(error);
-      });
-
+    loadMenu();
   </script>
 </body>
 </html>
