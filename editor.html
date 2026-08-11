@@ -111,7 +111,6 @@
 
     .tree li {
       margin: 10px 0;
-      /* keep normal vertical stacking */
     }
 
     .node-buttons-wrapper {
@@ -179,7 +178,8 @@
           id="username"
           name="username"
           autocomplete="username"
-          readonly
+          required
+          spellcheck="false"
         >
       </div>
 
@@ -215,11 +215,15 @@
       <button id="logout-btn" type="button">Logout</button>
     </div>
 
-    <button id="add-top-btn" type="button">Add Top Category</button>
+    <button id="add-top-btn" type="button">
+      Add Top Category
+    </button>
 
     <div class="tree" id="menu-tree"></div>
 
-    <button id="save-btn" type="button">Save Menu</button>
+    <button id="save-btn" type="button">
+      Save Menu
+    </button>
 
     <div id="editor-status"></div>
 
@@ -232,12 +236,13 @@
     // GitHub Configuration
     // ==================================================
 
-    const GITHUB_OWNER = "Luna-Nocturna";
-    const GITHUB_REPO  = "Bookmarks";
-    const GITHUB_PATH  = "menu.html";
+    // These are intentionally hard-coded because this
+    // editor always works on this repository/file.
+    const GITHUB_REPO = "Bookmarks";
+    const GITHUB_PATH = "menu.html";
 
-    // The token is deliberately NOT stored here.
-    // It exists only in memory after successful login.
+    // These exist only in memory while logged in.
+    let githubOwner = null;
     let githubToken = null;
 
     let currentSha = null;
@@ -248,19 +253,38 @@
     // DOM Elements
     // ==================================================
 
-    const loginScreen = document.getElementById("login-screen");
-    const editorScreen = document.getElementById("editor-screen");
+    const loginScreen =
+      document.getElementById("login-screen");
 
-    const loginForm = document.getElementById("login-form");
-    const usernameInput = document.getElementById("username");
-    const passwordInput = document.getElementById("password");
-    const loginButton = document.getElementById("login-btn");
-    const loginStatus = document.getElementById("login-status");
+    const editorScreen =
+      document.getElementById("editor-screen");
 
-    const logoutButton = document.getElementById("logout-btn");
-    const saveButton = document.getElementById("save-btn");
-    const addTopButton = document.getElementById("add-top-btn");
-    const editorStatus = document.getElementById("editor-status");
+    const loginForm =
+      document.getElementById("login-form");
+
+    const usernameInput =
+      document.getElementById("username");
+
+    const passwordInput =
+      document.getElementById("password");
+
+    const loginButton =
+      document.getElementById("login-btn");
+
+    const loginStatus =
+      document.getElementById("login-status");
+
+    const logoutButton =
+      document.getElementById("logout-btn");
+
+    const saveButton =
+      document.getElementById("save-btn");
+
+    const addTopButton =
+      document.getElementById("add-top-btn");
+
+    const editorStatus =
+      document.getElementById("editor-status");
 
 
     // ==================================================
@@ -271,76 +295,132 @@
 
       event.preventDefault();
 
-      const token = passwordInput.value.trim();
+      const username =
+        usernameInput.value.trim();
 
-      if (!token) {
-        loginStatus.textContent = "Please enter your GitHub token.";
+      const token =
+        passwordInput.value.trim();
+
+
+      if (!username) {
+
+        loginStatus.textContent =
+          "Please enter your GitHub username.";
+
+        usernameInput.focus();
+
         return;
+
       }
 
+
+      if (!token) {
+
+        loginStatus.textContent =
+          "Please enter your GitHub token.";
+
+        passwordInput.focus();
+
+        return;
+
+      }
+
+
       loginButton.disabled = true;
+      usernameInput.disabled = true;
       passwordInput.disabled = true;
 
-      loginStatus.textContent = "Checking GitHub credentials...";
+      loginStatus.textContent =
+        "Checking GitHub credentials...";
+
 
       try {
 
-        // Test the credentials by requesting the menu file.
+        // Store the credentials only in memory.
+        githubOwner = username;
+        githubToken = token;
+
+
+        // Test the credentials by requesting
+        // the menu file.
         const response = await fetch(
-          `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${GITHUB_PATH}`,
+          `https://api.github.com/repos/${encodeURIComponent(githubOwner)}/${GITHUB_REPO}/contents/${GITHUB_PATH}`,
           {
             method: "GET",
+
             headers: {
-              "Authorization": `Bearer ${token}`,
-              "Accept": "application/vnd.github+json"
+              "Authorization":
+                `Bearer ${githubToken}`,
+
+              "Accept":
+                "application/vnd.github+json"
             }
           }
         );
 
+
         if (!response.ok) {
 
-          let message = `GitHub returned HTTP ${response.status}.`;
+          let message =
+            `GitHub returned HTTP ${response.status}.`;
 
           try {
-            const errorData = await response.json();
+
+            const errorData =
+              await response.json();
 
             if (errorData.message) {
-              message += ` ${errorData.message}`;
+              message +=
+                ` ${errorData.message}`;
             }
+
           } catch {
             // Ignore JSON parsing errors.
           }
 
           throw new Error(message);
+
         }
 
+
         // Credentials are valid.
-        githubToken = token;
-
-        // Clear the visible password field.
-        passwordInput.value = "";
-
         loginStatus.textContent = "";
+
+        // Clear the visible token field.
+        // The token remains only in memory.
+        passwordInput.value = "";
 
         loginScreen.style.display = "none";
         editorScreen.style.display = "block";
 
+
         await loadMenu();
+
 
       } catch (error) {
 
+        // Authentication failed.
+        githubOwner = null;
         githubToken = null;
 
         loginStatus.textContent =
           `Login failed: ${error.message}`;
 
         passwordInput.disabled = false;
+        usernameInput.disabled = false;
+
         passwordInput.focus();
 
       } finally {
 
         loginButton.disabled = false;
-        passwordInput.disabled = false;
+
+        if (
+          loginScreen.style.display !== "none"
+        ) {
+          usernameInput.disabled = false;
+          passwordInput.disabled = false;
+        }
 
       }
 
@@ -353,10 +433,11 @@
 
     logoutButton.addEventListener("click", () => {
 
-      // Remove the token from memory.
+      // Remove credentials from memory.
+      githubOwner = null;
       githubToken = null;
 
-      // Clear any currently loaded menu data.
+      // Clear loaded data.
       menuData = [];
       currentSha = null;
 
@@ -366,12 +447,16 @@
       // Show login screen.
       loginScreen.style.display = "block";
 
-      // Clear password field.
+      // Clear fields.
+      usernameInput.value = "";
       passwordInput.value = "";
 
       loginStatus.textContent = "";
 
-      passwordInput.focus();
+      usernameInput.disabled = false;
+      passwordInput.disabled = false;
+
+      usernameInput.focus();
 
     });
 
@@ -382,42 +467,66 @@
 
     async function loadMenu() {
 
-      if (!githubToken) {
+      if (!githubOwner || !githubToken) {
         throw new Error("You are not logged in.");
       }
 
-      editorStatus.textContent = "Loading menu...";
+
+      editorStatus.textContent =
+        "Loading menu...";
+
 
       try {
 
         const response = await fetch(
-          `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${GITHUB_PATH}`,
+          `https://api.github.com/repos/${encodeURIComponent(githubOwner)}/${GITHUB_REPO}/contents/${GITHUB_PATH}`,
           {
             method: "GET",
+
             headers: {
-              "Authorization": `Bearer ${githubToken}`,
-              "Accept": "application/vnd.github+json"
+              "Authorization":
+                `Bearer ${githubToken}`,
+
+              "Accept":
+                "application/vnd.github+json"
             }
           }
         );
 
-        const data = await response.json();
+
+        const data =
+          await response.json();
+
 
         if (!response.ok) {
+
           throw new Error(
-            data.message || `GitHub returned HTTP ${response.status}.`
+            data.message ||
+            `GitHub returned HTTP ${response.status}.`
           );
+
         }
 
-        currentSha = data.sha;
 
-        const html = atob(data.content.replace(/\n/g, ""));
+        currentSha =
+          data.sha;
 
-        menuData = parseHTML(html);
+
+        const html =
+          atob(
+            data.content.replace(/\n/g, "")
+          );
+
+
+        menuData =
+          parseHTML(html);
+
 
         renderTree();
 
+
         editorStatus.textContent = "";
+
 
       } catch (error) {
 
@@ -437,7 +546,8 @@
 
     function parseHTML(html) {
 
-      const container = document.createElement("div");
+      const container =
+        document.createElement("div");
 
       container.innerHTML = html;
 
@@ -446,35 +556,51 @@
 
         const items = [];
 
+
         Array.from(ul.children).forEach(li => {
 
-          if (li.tagName !== "LI") return;
+          if (li.tagName !== "LI") {
+            return;
+          }
 
-          const a = li.querySelector("a");
 
-          const span = a
-            ? a.querySelector("span.menu-text")
-            : null;
+          const a =
+            li.querySelector("a");
 
-          const text = span
-            ? span.textContent
-            : (a ? a.textContent : "");
 
-          const href = a
-            ? a.getAttribute("href")
-            : "#";
+          const span =
+            a
+              ? a.querySelector("span.menu-text")
+              : null;
 
-          const subUL = li.querySelector("ul");
+
+          const text =
+            span
+              ? span.textContent
+              : (a ? a.textContent : "");
+
+
+          const href =
+            a
+              ? a.getAttribute("href")
+              : "#";
+
+
+          const subUL =
+            li.querySelector("ul");
+
 
           items.push({
             text,
             href,
-            children: subUL
-              ? parseUL(subUL)
-              : []
+            children:
+              subUL
+                ? parseUL(subUL)
+                : []
           });
 
         });
+
 
         return items;
 
@@ -483,24 +609,37 @@
 
       const topItems = [];
 
-      Array.from(container.children).forEach(node => {
+
+      Array.from(
+        container.children
+      ).forEach(node => {
 
         if (node.tagName === "LI") {
 
           topItems.push({
+
             text:
-              node.querySelector("span.menu-text")?.textContent || "",
+              node.querySelector(
+                "span.menu-text"
+              )?.textContent || "",
 
             href:
-              node.querySelector("a")?.getAttribute("href") || "#",
+              node.querySelector(
+                "a"
+              )?.getAttribute("href") || "#",
 
             children:
               node.querySelector("ul")
-                ? parseUL(node.querySelector("ul"))
+                ? parseUL(
+                    node.querySelector("ul")
+                  )
                 : []
+
           });
 
-        } else if (node.tagName === "UL") {
+        } else if (
+          node.tagName === "UL"
+        ) {
 
           parseUL(node).forEach(item =>
             topItems.push(item)
@@ -509,6 +648,7 @@
         }
 
       });
+
 
       return topItems;
 
@@ -522,14 +662,20 @@
     function renderTree() {
 
       const container =
-        document.getElementById("menu-tree");
+        document.getElementById(
+          "menu-tree"
+        );
 
       container.innerHTML = "";
 
 
-      function createNode(item, parentArray) {
+      function createNode(
+        item,
+        parentArray
+      ) {
 
-        const li = document.createElement("li");
+        const li =
+          document.createElement("li");
 
 
         // ----------------------------------------------
@@ -560,10 +706,12 @@
         upBtn.type = "button";
         upBtn.textContent = "↑";
 
+
         upBtn.onclick = () => {
 
           const index =
             parentArray.indexOf(item);
+
 
           if (index > 0) {
 
@@ -575,6 +723,7 @@
               parentArray[index],
               parentArray[index - 1]
             ];
+
 
             renderTree();
 
@@ -589,12 +738,17 @@
         downBtn.type = "button";
         downBtn.textContent = "↓";
 
+
         downBtn.onclick = () => {
 
           const index =
             parentArray.indexOf(item);
 
-          if (index < parentArray.length - 1) {
+
+          if (
+            index <
+            parentArray.length - 1
+          ) {
 
             [
               parentArray[index],
@@ -604,6 +758,7 @@
               parentArray[index + 1],
               parentArray[index]
             ];
+
 
             renderTree();
 
@@ -630,24 +785,31 @@
         const textInput =
           document.createElement("input");
 
-        textInput.value = item.text;
+        textInput.value =
+          item.text;
+
 
         textInput.oninput = () =>
-          item.text = textInput.value;
+          item.text =
+            textInput.value;
 
 
         const hrefInput =
           document.createElement("input");
 
-        hrefInput.value = item.href;
+        hrefInput.value =
+          item.href;
 
-        hrefInput.placeholder = "URL";
+        hrefInput.placeholder =
+          "URL";
 
         hrefInput.className =
           "link-input";
 
+
         hrefInput.oninput = () =>
-          item.href = hrefInput.value;
+          item.href =
+            hrefInput.value;
 
 
         const addBtn =
@@ -655,6 +817,7 @@
 
         addBtn.type = "button";
         addBtn.textContent = "Add Sub";
+
 
         addBtn.onclick = () => {
 
@@ -664,7 +827,11 @@
             children: []
           };
 
-          item.children.push(newItem);
+
+          item.children.push(
+            newItem
+          );
+
 
           renderTree();
 
@@ -677,36 +844,61 @@
         delBtn.type = "button";
         delBtn.textContent = "Delete";
 
+
         delBtn.onclick = () => {
 
           const index =
             parentArray.indexOf(item);
 
-          parentArray.splice(index, 1);
+
+          parentArray.splice(
+            index,
+            1
+          );
+
 
           renderTree();
 
         };
 
 
-        nodeDiv.appendChild(textInput);
-        nodeDiv.appendChild(hrefInput);
-        nodeDiv.appendChild(addBtn);
-        nodeDiv.appendChild(delBtn);
+        nodeDiv.appendChild(
+          textInput
+        );
+
+        nodeDiv.appendChild(
+          hrefInput
+        );
+
+        nodeDiv.appendChild(
+          addBtn
+        );
+
+        nodeDiv.appendChild(
+          delBtn
+        );
 
 
         // ----------------------------------------------
         // Combine Wrapper
         // ----------------------------------------------
 
-        wrapperDiv.appendChild(upDownDiv);
-        wrapperDiv.appendChild(nodeDiv);
+        wrapperDiv.appendChild(
+          upDownDiv
+        );
 
-        li.appendChild(wrapperDiv);
+        wrapperDiv.appendChild(
+          nodeDiv
+        );
+
+
+        li.appendChild(
+          wrapperDiv
+        );
 
 
         // ----------------------------------------------
-        // Children
+        // Children Recursively
         // ----------------------------------------------
 
         if (
@@ -717,11 +909,16 @@
           const ul =
             document.createElement("ul");
 
+
           item.children.forEach(child =>
             ul.appendChild(
-              createNode(child, item.children)
+              createNode(
+                child,
+                item.children
+              )
             )
           );
+
 
           li.appendChild(ul);
 
@@ -736,13 +933,20 @@
       const ulRoot =
         document.createElement("ul");
 
+
       menuData.forEach(item =>
         ulRoot.appendChild(
-          createNode(item, menuData)
+          createNode(
+            item,
+            menuData
+          )
         )
       );
 
-      container.appendChild(ulRoot);
+
+      container.appendChild(
+        ulRoot
+      );
 
     }
 
@@ -751,30 +955,42 @@
     // Add Top Category
     // ==================================================
 
-    addTopButton.addEventListener("click", () => {
+    addTopButton.addEventListener(
+      "click",
+      () => {
 
-      menuData.push({
-        text: "New Category",
-        href: "#",
-        children: []
-      });
+        menuData.push({
+          text: "New Category",
+          href: "#",
+          children: []
+        });
 
-      renderTree();
 
-    });
+        renderTree();
+
+      }
+    );
 
 
     // ==================================================
     // Convert Tree to HTML
     // ==================================================
 
-    function treeToHTML(items, indent = 0) {
+    function treeToHTML(
+      items,
+      indent = 0
+    ) {
 
-      if (!items || items.length === 0) {
+      if (
+        !items ||
+        items.length === 0
+      ) {
         return "";
       }
 
+
       let html = "";
+
 
       const spacer =
         "  ".repeat(indent);
@@ -790,6 +1006,7 @@
 
         html +=
           spacer + "  <li>";
+
 
         html +=
           `<a href="${item.href}">` +
@@ -808,13 +1025,15 @@
               indent + 2
             );
 
+
           html +=
             spacer + "  ";
 
         }
 
 
-        html += "</li>\n";
+        html +=
+          "</li>\n";
 
       });
 
@@ -836,9 +1055,14 @@
 
     async function saveTree() {
 
-      if (!githubToken) {
+      if (
+        !githubOwner ||
+        !githubToken
+      ) {
 
-        alert("You are not logged in.");
+        alert(
+          "You are not logged in."
+        );
 
         return;
 
@@ -849,8 +1073,7 @@
         treeToHTML(menuData);
 
 
-      // Encode as UTF-8 before Base64 encoding.
-      // This also handles non-ASCII menu text correctly.
+      // UTF-8-safe Base64 encoding.
       const content =
         btoa(
           unescape(
@@ -861,41 +1084,48 @@
 
       saveButton.disabled = true;
 
+
       editorStatus.textContent =
         "Saving menu...";
 
 
       try {
 
-        const response = await fetch(
-          `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${GITHUB_PATH}`,
-          {
-            method: "PUT",
+        const response =
+          await fetch(
+            `https://api.github.com/repos/${encodeURIComponent(githubOwner)}/${GITHUB_REPO}/contents/${GITHUB_PATH}`,
+            {
+              method: "PUT",
 
-            headers: {
-              "Authorization":
-                `Bearer ${githubToken}`,
+              headers: {
 
-              "Accept":
-                "application/vnd.github+json",
+                "Authorization":
+                  `Bearer ${githubToken}`,
 
-              "Content-Type":
-                "application/json"
-            },
+                "Accept":
+                  "application/vnd.github+json",
 
-            body: JSON.stringify({
-              message:
-                "Update menu via editor",
+                "Content-Type":
+                  "application/json"
 
-              content:
-                content,
+              },
 
-              sha:
-                currentSha
-            })
+              body:
+                JSON.stringify({
 
-          }
-        );
+                  message:
+                    "Update menu via editor",
+
+                  content:
+                    content,
+
+                  sha:
+                    currentSha
+
+                })
+
+            }
+          );
 
 
         const result =
@@ -918,15 +1148,19 @@
             "Menu saved successfully!"
           );
 
+
           currentSha =
             result.content.sha;
+
 
           editorStatus.textContent =
             "";
 
+
           // Redirect to main page.
           window.location.href =
             "index.html";
+
 
         } else {
 
@@ -942,11 +1176,14 @@
         editorStatus.textContent =
           `Save failed: ${error.message}`;
 
+
         console.error(error);
+
 
         alert(
           `Save failed:\n\n${error.message}`
         );
+
 
       } finally {
 
